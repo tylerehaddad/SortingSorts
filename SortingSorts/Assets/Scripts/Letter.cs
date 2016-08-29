@@ -1,15 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Letter : MonoBehaviour {
+public class Letter : MonoBehaviour
+{
+    public char character;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public Letter()
+    {
+        character = 'A';
+    }
+
+    public Letter(char ch)
+    {
+        character = ch;
+    }
+
+    public void SetChar(char ch)
+    {
+        character = ch;
+    }
 }
