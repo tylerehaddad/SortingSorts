@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class Phrases : MonoBehaviour {
+public class Phrases : MonoBehaviour
+{
 
     /// <summary>
     /// List phrases contains the list of all phrases
@@ -61,6 +62,8 @@ public class Phrases : MonoBehaviour {
 
         Debug.Log(phraseBlanks);
     }
+
+    // Using to test functions for now
 
     void Start()
     {
