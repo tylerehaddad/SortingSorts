@@ -14,7 +14,7 @@ public class Letter : MonoBehaviour
     
 
     public Sprite[] letterSprites;
-    char letter;
+    public char letter =' ';
     private string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     /// <summary>
@@ -23,7 +23,7 @@ public class Letter : MonoBehaviour
     /// SpriteRenderer of object to proper sprite.
     /// </summary>
 
-    void AssignLetter()
+    public void AssignLetter()
     {
         for (int i = 0; i < 26; i++)
         {

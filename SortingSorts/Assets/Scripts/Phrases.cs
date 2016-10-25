@@ -19,6 +19,9 @@ public class Phrases : MonoBehaviour
     
     public List<string> phrases;
     private string currentPhrase;
+    public GameObject blockPrefab;
+    public GameObject underscorePrefab;
+    private int screenCenter;
 
     /// <summary>
     /// ChoosePhrase() is used to 
@@ -43,24 +46,24 @@ public class Phrases : MonoBehaviour
     /// the letter blocks to attach to.
     /// </summary>
 
-    void GenerateSpaces()
+    void SortPhrase()
     {
-        string phraseNoSpaces = currentPhrase.Replace(" ", "");
-        string phraseBlanks = "";
-
-        for (int i = 0; i < currentPhrase.Length - 1; i++)
+        for (int i = 0; i < currentPhrase.Length; i++)
         {
-            if (currentPhrase[i] == ' ')
+            if (currentPhrase[i] != ' ')
             {
-                phraseBlanks += " ";
-            }
-            else
-            {
-                phraseBlanks += "_";
+                GenerateBlocks(currentPhrase[i]);
+                Transform t = Instantiate(underscorePrefab).transform;
+                t.position = new Vector2(i * -1 + 7, 0);
             }
         }
+    }
 
-        Debug.Log(phraseBlanks);
+    void GenerateBlocks(char c)
+    {
+        Letter l = Instantiate(blockPrefab).GetComponent<Letter>();
+        l.letter = c;
+        l.AssignLetter();
     }
 
     // Using to test functions for now
@@ -68,7 +71,7 @@ public class Phrases : MonoBehaviour
     void Start()
     {
         ChoosePhrase();
-        GenerateSpaces();
+        SortPhrase();
     }
 }
 
