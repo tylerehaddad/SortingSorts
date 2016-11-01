@@ -22,7 +22,7 @@ public class Phrases : MonoBehaviour
     public GameObject blockPrefab;
     public GameObject underscorePrefab;
     private int screenCenter;
-
+	private List<Underscore> underscores;
     /// <summary>
     /// ChoosePhrase() is used to 
     /// determine the phrase to be
@@ -48,13 +48,15 @@ public class Phrases : MonoBehaviour
 
     void SortPhrase()
     {
+		//-currentPhrase.length / 2 * (letterWidth + spacing) + i * (letterWidth + spacing)
         for (int i = 0; i < currentPhrase.Length; i++)
         {
             if (currentPhrase[i] != ' ')
             {
                 GenerateBlocks(currentPhrase[i]);
                 Transform t = Instantiate(underscorePrefab).transform;
-                t.position = new Vector2(i * -1 + 7, 0);
+				t.position = new Vector2(currentPhrase.Length/2 * 6 - i * 6, 0);
+				underscores.Add (t.GetComponent<Underscore>());
             }
         }
     }
@@ -62,14 +64,31 @@ public class Phrases : MonoBehaviour
     void GenerateBlocks(char c)
     {
         Letter l = Instantiate(blockPrefab).GetComponent<Letter>();
+		l.transform.position = new Vector2 (0, 10);
         l.letter = c;
         l.AssignLetter();
     }
+
+	public Underscore getNextUnderscore()
+	{
+		if (underscores.Count >= 1) 
+		{
+			for (int i = 0; i < underscores.Count; i++) 
+			{
+				if (underscores [i].taken == false) 
+				{
+					return underscores [i];
+				}
+			}
+		}
+		return null;
+	}
 
     // Using to test functions for now
 
     void Start()
     {
+		underscores = new List<Underscore> ();
         ChoosePhrase();
         SortPhrase();
     }
