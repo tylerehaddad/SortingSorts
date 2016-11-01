@@ -33,6 +33,7 @@ public class ClickAndDrag : MonoBehaviour
 				clickTimer = 0;
 				if (Physics.Raycast (ray, out hit, 100, underscores)) {
 					hit.collider.gameObject.GetComponent<Underscore> ().taken = false;
+					selectedBlock.transform.SetParent (null);
 				}
 
             }
@@ -62,7 +63,8 @@ public class ClickAndDrag : MonoBehaviour
 					if (u != null) 
 					{
 						u.taken = true;
-						selectedBlock.transform.position = u.transform.position;
+						selectedBlock.transform.position = new Vector2(u.transform.position.x, u.transform.position.y + 0.5f);
+						selectedBlock.transform.SetParent (u.transform);
 					}
 
 				}
@@ -73,8 +75,8 @@ public class ClickAndDrag : MonoBehaviour
 					if (!u.taken) 
 					{
 						u.taken = true;
-						selectedBlock.transform.position = hit.collider.gameObject.transform.position;
-
+						selectedBlock.transform.position = new Vector2(hit.collider.transform.position.x, hit.collider.transform.position.y + 0.5f);
+						selectedBlock.transform.SetParent (hit.collider.transform);
 					}
 				}
 

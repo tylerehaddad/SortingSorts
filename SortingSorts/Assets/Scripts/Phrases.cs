@@ -23,6 +23,7 @@ public class Phrases : MonoBehaviour
     public GameObject underscorePrefab;
     private int screenCenter;
 	private List<Underscore> underscores;
+	private List<Transform> blocks;
     /// <summary>
     /// ChoosePhrase() is used to 
     /// determine the phrase to be
@@ -48,7 +49,7 @@ public class Phrases : MonoBehaviour
 
     void SortPhrase()
     {
-		//-currentPhrase.length / 2 * (letterWidth + spacing) + i * (letterWidth + spacing)
+		
         for (int i = 0; i < currentPhrase.Length; i++)
         {
             if (currentPhrase[i] != ' ')
@@ -63,10 +64,26 @@ public class Phrases : MonoBehaviour
 
     void GenerateBlocks(char c)
     {
+		bool same;
+		float x;
+		do
+		{
+			x = -currentPhrase.Length/2 * 6 + Random.Range (0, currentPhrase.Length) * 6;
+			same = false;
+			for (int i = 0; i < blocks.Count; i++) 
+			{
+				if (x == blocks [i].position.x) 
+				{
+					same = true;
+				}
+			}
+
+		}while(same == true);
         Letter l = Instantiate(blockPrefab).GetComponent<Letter>();
-		l.transform.position = new Vector2 (0, 10);
+		l.transform.position = new Vector2 (x, -10);
         l.letter = c;
         l.AssignLetter();
+		blocks.Add (l.transform);
     }
 
 	public Underscore getNextUnderscore()
@@ -84,11 +101,70 @@ public class Phrases : MonoBehaviour
 		return null;
 	}
 
+	//test if the phrase is correct
+	public void testPhrase()
+	{
+		string submitted = "";
+		string currentPhraseNoSpaces = "";
+		for (int i = 0; i < currentPhrase.Length; i++) 
+		{
+			if (currentPhrase [i] != ' ') {
+				currentPhraseNoSpaces += currentPhrase [i];
+			}
+		}
+
+		for (int i = 0; i < underscores.Count; i++) 
+		{
+			if (underscores [i].transform.childCount >= 1) {
+				Letter l = underscores [i].transform.GetComponentInChildren<Letter>();
+				submitted += l.letter;
+			}
+
+		}
+
+		print (submitted);
+		if (submitted == currentPhraseNoSpaces) 
+		{
+			print ("Win!");
+			Reset ();
+		} 
+		else 
+		{
+			print ("Lose.");
+			for (int i = 0; i < blocks.Count; i++) 
+			{
+				blocks [i].transform.SetParent (null);
+
+				blocks[i].position = new Vector2 (blocks[i].position.x ,-10);
+			}
+
+		}
+
+	}
+
+	void Reset()
+	{
+		for (int i = 0; i < blocks.Count; i++) 
+		{
+			Destroy (blocks [i].gameObject);
+		}
+		for (int i = 0; i < underscores.Count; i++) 
+		{
+			Destroy (underscores [i].gameObject);
+		}
+
+		underscores = new List<Underscore> ();
+		blocks = new List<Transform> ();
+		ChoosePhrase();
+		SortPhrase();
+	}
+
     // Using to test functions for now
 
     void Start()
     {
 		underscores = new List<Underscore> ();
+		blocks = new List<Transform> ();
         ChoosePhrase();
         SortPhrase();
     }
