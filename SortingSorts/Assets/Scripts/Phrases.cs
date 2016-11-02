@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 
 public class Phrases : MonoBehaviour
 {
@@ -21,6 +21,11 @@ public class Phrases : MonoBehaviour
     private string currentPhrase;
     public GameObject blockPrefab;
     public GameObject underscorePrefab;
+	public Text scoreText;
+	public Text timerText;
+
+	private float roundTimer;
+	private int score;
     private int screenCenter;
 	private List<Underscore> underscores;
 	private List<Transform> blocks;
@@ -46,6 +51,18 @@ public class Phrases : MonoBehaviour
     /// latter to generate underscores for
     /// the letter blocks to attach to.
     /// </summary>
+
+	void Update()
+	{
+		timerText.text = roundTimer.ToString ("##.##");
+		roundTimer -= Time.deltaTime;
+		if (roundTimer < 0) 
+		{
+			score -= 5;
+			scoreText.text = score.ToString ();
+			Reset ();
+		}
+	}
 
     void SortPhrase()
     {
@@ -122,15 +139,14 @@ public class Phrases : MonoBehaviour
 
 		}
 
-		print (submitted);
 		if (submitted == currentPhraseNoSpaces) 
 		{
-			print ("Win!");
+			score += currentPhraseNoSpaces.Length;
+			scoreText.text = score.ToString ();
 			Reset ();
 		} 
 		else 
 		{
-			print ("Lose.");
 			for (int i = 0; i < blocks.Count; i++) 
 			{
 				blocks [i].transform.SetParent (null);
@@ -157,12 +173,15 @@ public class Phrases : MonoBehaviour
 		blocks = new List<Transform> ();
 		ChoosePhrase();
 		SortPhrase();
+		roundTimer = 30f;
 	}
 
     // Using to test functions for now
 
     void Start()
     {
+		score = 0;
+		roundTimer = 30f;
 		underscores = new List<Underscore> ();
 		blocks = new List<Transform> ();
         ChoosePhrase();
