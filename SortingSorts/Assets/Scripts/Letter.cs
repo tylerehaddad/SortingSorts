@@ -23,6 +23,12 @@ public class Letter : MonoBehaviour
     /// SpriteRenderer of object to proper sprite.
     /// </summary>
 
+	void Start()
+	{
+		gameObject.GetComponent<SpriteRenderer> ().flipY = true;
+		gameObject.GetComponent<SpriteRenderer> ().flipX = true;
+	}
+
     public void AssignLetter()
     {
         for (int i = 0; i < 26; i++)
