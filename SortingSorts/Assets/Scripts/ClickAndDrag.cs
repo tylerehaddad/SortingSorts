@@ -19,6 +19,7 @@ public class ClickAndDrag : MonoBehaviour
 
     void Update()
     {
+
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -34,6 +35,8 @@ public class ClickAndDrag : MonoBehaviour
 				if (Physics.Raycast (ray, out hit, 100, underscores)) {
 					hit.collider.gameObject.GetComponent<Underscore> ().taken = false;
 					selectedBlock.transform.SetParent (null);
+					selectedBlock.transform.position = selectedBlock.GetComponent<Letter> ().startPos;
+					dragging = false;
 				}
 
             }

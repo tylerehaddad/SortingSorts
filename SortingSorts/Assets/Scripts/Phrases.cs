@@ -20,15 +20,21 @@ public class Phrases : MonoBehaviour
     public List<string> phrases;
     private string currentPhrase;
     public GameObject blockPrefab;
+	public GameObject emptyBlockPrefab;
     public GameObject underscorePrefab;
 	public Text scoreText;
 	public Text timerText;
+	public Transform box;
+	public Transform stick;
+	public bool playing;
+
 
 	private float roundTimer;
 	private int score;
     private int screenCenter;
 	private List<Underscore> underscores;
 	private List<Transform> blocks;
+	private float blockWidth;
     /// <summary>
     /// ChoosePhrase() is used to 
     /// determine the phrase to be
@@ -54,50 +60,132 @@ public class Phrases : MonoBehaviour
 
 	void Update()
 	{
-		timerText.text = roundTimer.ToString ("##.##");
-		roundTimer -= Time.deltaTime;
-		if (roundTimer < 0) 
+		if (playing) 
 		{
-			score -= 5;
-			scoreText.text = score.ToString ();
-			Reset ();
+			timerText.text = roundTimer.ToString ("##.##");
+			roundTimer -= Time.deltaTime;
+			if (roundTimer < 0) 
+			{
+				score -= 5;
+				scoreText.text = score.ToString ();
+				Reset ();
+			}
 		}
+
+	}
+
+	public void Play()
+	{
+		playing = true;
 	}
 
     void SortPhrase()
     {
-		
+		float x = 60 + blockWidth;
+		float y = -26;
+		int nextSpace = 0;
+		for (int i = 0; i < currentPhrase.Length; i++) 
+		{
+			if (currentPhrase [i] == ' ') 
+			{
+				nextSpace = i;
+				break;
+			}
+		}
+
         for (int i = 0; i < currentPhrase.Length; i++)
         {
+			x -= blockWidth;
+
             if (currentPhrase[i] != ' ')
             {
                 GenerateBlocks(currentPhrase[i]);
                 Transform t = Instantiate(underscorePrefab).transform;
-				t.position = new Vector2(currentPhrase.Length/2 * 6 - i * 6, 0);
+				t.SetParent(stick);
+				if (x - blockWidth *(nextSpace - i) <= 60 - blockWidth * 9 && y == -26) 
+				{
+					
+
+					while (x >= 60 - blockWidth * 10) {
+						Transform empty = Instantiate(emptyBlockPrefab).transform;
+						empty.SetParent(stick);
+						empty.localPosition = new Vector2(x,y);
+						x -= blockWidth;
+					}
+
+					y = -14;
+					x = 60;
+				}
+				else if (x - blockWidth *(nextSpace - i) <= 60 - blockWidth * 9 && y == -14) 
+				{
+					while (x >= 60 - blockWidth * 10) {
+						Transform empty = Instantiate(emptyBlockPrefab).transform;
+						empty.SetParent(stick);
+						empty.localPosition = new Vector2(x,y);
+						x -= blockWidth;
+					}
+					y = -2;
+					x = 60;
+				}
+
+				t.localPosition = new Vector2(x,y);
+
 				underscores.Add (t.GetComponent<Underscore>());
             }
+			else
+			{
+				//Find Next Word Last I
+				for (int j = i+1; j < currentPhrase.Length; j++) 
+				{
+					if (currentPhrase [j] == ' ') 
+					{
+						nextSpace = j-1;
+						break;
+					}
+				}
+				if (nextSpace <= i)
+					nextSpace = currentPhrase.Length-1;
+
+
+
+				Transform t = Instantiate(emptyBlockPrefab).transform;
+				t.SetParent(stick);
+				t.localPosition = new Vector2(x,y);
+
+			}
         }
     }
 
-    void GenerateBlocks(char c)
+	void GenerateBlocks(char c)
     {
 		bool same;
 		float x;
+		float y = -15;
 		do
 		{
-			x = -currentPhrase.Length/2 * 6 + Random.Range (0, currentPhrase.Length) * 6;
+			x = -currentPhrase.Length/2 * blockWidth + Random.Range (0, currentPhrase.Length) * blockWidth;
 			same = false;
+			if(x > 70 || x < -70)
+			{
+				y -= 15;
+				x = (x > 70)?x-70:x+70;
+			}
 			for (int i = 0; i < blocks.Count; i++) 
 			{
-				if (x == blocks [i].position.x) 
+				if (x == blocks[i].localPosition.x && y == blocks[i].localPosition.y) 
 				{
 					same = true;
+					y = -15;
 				}
 			}
 
+				
+
 		}while(same == true);
-        Letter l = Instantiate(blockPrefab).GetComponent<Letter>();
-		l.transform.position = new Vector2 (x, -10);
+
+	
+		Letter l = Instantiate (blockPrefab).GetComponent<Letter> ();
+		l.transform.localPosition = new Vector2 (x, y);
         l.letter = c;
         l.AssignLetter();
 		blocks.Add (l.transform);
@@ -160,30 +248,39 @@ public class Phrases : MonoBehaviour
 
 	void Reset()
 	{
+		
 		for (int i = 0; i < blocks.Count; i++) 
 		{
 			Destroy (blocks [i].gameObject);
 		}
+
 		for (int i = 0; i < underscores.Count; i++) 
 		{
 			Destroy (underscores [i].gameObject);
+		}
+
+		foreach (GameObject g in GameObject.FindGameObjectsWithTag ("EmptyBlock"))
+		{
+			Destroy (g);
 		}
 
 		underscores = new List<Underscore> ();
 		blocks = new List<Transform> ();
 		ChoosePhrase();
 		SortPhrase();
-		roundTimer = 30f;
+		roundTimer = 60f;
 	}
 
     // Using to test functions for now
 
-    void Start()
+	void Start()
     {
 		score = 0;
-		roundTimer = 30f;
+		roundTimer = 60f;
 		underscores = new List<Underscore> ();
 		blocks = new List<Transform> ();
+		blockWidth = blockPrefab.GetComponentInChildren<SpriteRenderer> ().bounds.size.x + 1.2f;
+		print (blockWidth);
         ChoosePhrase();
         SortPhrase();
     }

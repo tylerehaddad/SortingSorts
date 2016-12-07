@@ -16,7 +16,7 @@ public class Letter : MonoBehaviour
     public Sprite[] letterSprites;
     public char letter =' ';
     private string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+	public Vector2 startPos;
     /// <summary>
     /// Iterates through alphabet in order to find
     /// which letter was assigned. Then sets
@@ -27,10 +27,12 @@ public class Letter : MonoBehaviour
 	{
 		gameObject.GetComponent<SpriteRenderer> ().flipY = true;
 		gameObject.GetComponent<SpriteRenderer> ().flipX = true;
+
 	}
 
     public void AssignLetter()
     {
+		startPos = transform.position;
         for (int i = 0; i < 26; i++)
         {
             if (letter == alphabet[i])
