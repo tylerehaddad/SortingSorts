@@ -221,8 +221,11 @@ public class Phrases : MonoBehaviour
 		for (int i = 0; i < underscores.Count; i++) 
 		{
 			if (underscores [i].transform.childCount >= 1) {
-				Letter l = underscores [i].transform.GetComponentInChildren<Letter>();
-				submitted += l.letter;
+				if (underscores [i].transform.childCount > 1) 
+				{
+					Letter l = underscores [i].transform.GetComponentInChildren<Letter>();
+					submitted += l.letter;
+				}
 			}
 
 		}
@@ -239,7 +242,11 @@ public class Phrases : MonoBehaviour
 			{
 				blocks [i].transform.SetParent (null);
 
-				blocks[i].position = new Vector2 (blocks[i].position.x ,-10);
+				blocks[i].position = blocks[i].GetComponent<Letter>().startPos;
+			}
+			for (int i = 0; i < underscores.Count; i++) 
+			{
+				underscores [i].taken = false;
 			}
 
 		}

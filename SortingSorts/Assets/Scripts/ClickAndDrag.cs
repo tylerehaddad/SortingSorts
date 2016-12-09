@@ -60,7 +60,7 @@ public class ClickAndDrag : MonoBehaviour
         {
 			if (dragging) 
 			{
-				if (clickTimer < 0.2f) 
+				/*if (clickTimer < 0.2f) 
 				{
 					Underscore u = phrasesRef.getNextUnderscore ();
 					if (u != null) 
@@ -70,7 +70,7 @@ public class ClickAndDrag : MonoBehaviour
 						selectedBlock.transform.SetParent (u.transform);
 					}
 
-				}
+				}*/
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				if (Physics.Raycast (ray, out hit, 100, underscores)) 
 				{
