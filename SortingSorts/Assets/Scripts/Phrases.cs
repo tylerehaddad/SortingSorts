@@ -18,6 +18,9 @@ public class Phrases : MonoBehaviour
     
     
     public List<string> phrases;
+	public List<string> hints;
+	public Text hintText;
+
     private string currentPhrase;
     public GameObject blockPrefab;
 	public GameObject emptyBlockPrefab;
@@ -27,7 +30,8 @@ public class Phrases : MonoBehaviour
 	public Transform box;
 	public Transform stick;
 	public bool playing;
-
+	public Text finalScore;
+	public GameObject ggMenu;
 
 	private float roundTimer;
 	private int score;
@@ -45,7 +49,15 @@ public class Phrases : MonoBehaviour
     void ChoosePhrase()
     {
         int i = Random.Range(0, phrases.Count);
-        currentPhrase = phrases[i];
+
+		while (currentPhrase == phrases [i])
+		{
+			i = Random.Range(0, phrases.Count);
+
+		}
+		currentPhrase = phrases[i];
+		hintText.text = hints [i];
+
         Debug.Log(currentPhrase);
     }
 
@@ -66,9 +78,9 @@ public class Phrases : MonoBehaviour
 			roundTimer -= Time.deltaTime;
 			if (roundTimer < 0) 
 			{
-				score -= 5;
-				scoreText.text = score.ToString ();
-				Reset ();
+				playing = false;
+				ggMenu.SetActive (true);
+				finalScore.text = score.ToString ();
 			}
 		}
 
@@ -161,15 +173,15 @@ public class Phrases : MonoBehaviour
 		bool same;
 		float x;
 		float y = -15;
+		float offset = blockWidth - 1.5f;
+		int tries = 0;
+		int width = Mathf.Min(currentPhrase.Length /3, 7);
+		width = Mathf.Max (width, 5);
 		do
 		{
-			x = -currentPhrase.Length/2 * blockWidth + Random.Range (0, currentPhrase.Length) * blockWidth;
+			x = -width* offset + Random.Range (0, width*2) * offset;
 			same = false;
-			if(x > 70 || x < -70)
-			{
-				y -= 15;
-				x = (x > 70)?x-70:x+70;
-			}
+
 			for (int i = 0; i < blocks.Count; i++) 
 			{
 				if (x == blocks[i].localPosition.x && y == blocks[i].localPosition.y) 
@@ -178,9 +190,34 @@ public class Phrases : MonoBehaviour
 					y = -15;
 				}
 			}
-
-				
-
+			if(same || x > width * offset + offset || x < -width * offset - offset)
+			{
+				if(y < -15)
+				{
+					same = true;
+					y = -15;
+					continue;
+				}
+				else
+				{
+					y = -30;
+					x = -width* offset + Random.Range (0, width*2) * offset;
+				}
+			}
+			same = false;
+			for (int i = 0; i < blocks.Count; i++) 
+			{
+				if (x == blocks[i].localPosition.x && y == blocks[i].localPosition.y) 
+				{
+					same = true;
+					y = -15;
+				}
+			}
+			tries++;
+			if(tries > 100)
+			{
+				same = false;
+			}
 		}while(same == true);
 
 	
@@ -275,7 +312,13 @@ public class Phrases : MonoBehaviour
 		blocks = new List<Transform> ();
 		ChoosePhrase();
 		SortPhrase();
-		roundTimer = 60f;
+		roundTimer += 60f;
+	}
+	public void Restart()
+	{
+		Reset ();
+		roundTimer = 120;
+		playing = true;
 	}
 
     // Using to test functions for now
@@ -283,11 +326,11 @@ public class Phrases : MonoBehaviour
 	void Start()
     {
 		score = 0;
-		roundTimer = 60f;
+		roundTimer = 120f;
 		underscores = new List<Underscore> ();
 		blocks = new List<Transform> ();
 		blockWidth = blockPrefab.GetComponentInChildren<SpriteRenderer> ().bounds.size.x + 1.2f;
-		print (blockWidth);
+		currentPhrase = "";
         ChoosePhrase();
         SortPhrase();
     }
