@@ -1,7 +1,7 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{21A5D78F-7822-A700-214C-DA5ECB25FFE0}") = "SortingSorts", "Assembly-CSharp.csproj", "{A5BC4171-2DEF-81E4-BB00-7D4F65F7F4F5}"
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortingSorts", "SortingSorts.csproj", "{CAF19B0C-BBA6-4B28-64CF-6BCFE9598D43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,15 +9,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A5BC4171-2DEF-81E4-BB00-7D4F65F7F4F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5BC4171-2DEF-81E4-BB00-7D4F65F7F4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5BC4171-2DEF-81E4-BB00-7D4F65F7F4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5BC4171-2DEF-81E4-BB00-7D4F65F7F4F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAF19B0C-BBA6-4B28-64CF-6BCFE9598D43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAF19B0C-BBA6-4B28-64CF-6BCFE9598D43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAF19B0C-BBA6-4B28-64CF-6BCFE9598D43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAF19B0C-BBA6-4B28-64CF-6BCFE9598D43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal
