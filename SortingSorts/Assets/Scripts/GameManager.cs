@@ -159,14 +159,23 @@ public class GameManager : MonoBehaviour {
 		{
 			x -= blockWidth;
 
+			//Word Wrapping.
 			if (currentPhrase[i] != ' ')
 			{
+				//Spawn the character we are currently on as a block.
 				GenerateBlocks(currentPhrase[i]);
+
+				//Creates the underscore.
 				Transform t = Instantiate(underscorePrefab).transform;
+
+				//Parents it.
 				t.SetParent(stick);
-				if (x - blockWidth *(nextSpace - i) <= 60 - blockWidth * 9 && y == -26) 
+
+
+				if (x - blockWidth * (nextSpace - i) <= stickOffsetX - blockWidth * 9 && y == stickOffsetY) 
 				{
-					while (x >= 60 - blockWidth * 10)
+					//Adds empty blocks until the end of the line.
+					while (x >= stickOffsetX - blockWidth * 10)
 					{
 						Transform empty = Instantiate(emptyBlockPrefab).transform;
 						empty.SetParent(stick);
@@ -174,12 +183,12 @@ public class GameManager : MonoBehaviour {
 						x -= blockWidth;
 					}
 
-					y = -14;
-					x = 60;
+					y = stickOffsetY + 12;
+					x = stickOffsetX;
 				}
-				else if (x - blockWidth *(nextSpace - i) <= 60 - blockWidth * 9 && y == -14) 
+				else if (x - blockWidth *(nextSpace - i) <= stickOffsetX - blockWidth * 9 && y == stickOffsetY + 12) 
 				{
-					while (x >= 60 - blockWidth * 10)
+					while (x >= stickOffsetX - blockWidth * 10)
 					{
 						Transform empty = Instantiate(emptyBlockPrefab).transform;
 						empty.SetParent(stick);
@@ -190,8 +199,10 @@ public class GameManager : MonoBehaviour {
 					x = 60;
 				}
 
+				//Move it to it's new home.
 				t.localPosition = new Vector2(x,y);
 
+				//Add it to the list.
 				underscores.Add (t.GetComponent<Underscore>());
 			}
 			else
@@ -253,7 +264,7 @@ public class GameManager : MonoBehaviour {
 				else
 				{
 					y = -30;
-					x = -width* offset + Random.Range (0, width*2) * offset;
+					x = -width * offset + Random.Range(0, width * 2) * offset;
 				}
 			}
 			same = false;
@@ -265,7 +276,9 @@ public class GameManager : MonoBehaviour {
 					y = -15;
 				}
 			}
+
 			tries++;
+
 			if(tries > 100)
 			{
 				same = false;
