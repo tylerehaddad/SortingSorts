@@ -16,35 +16,55 @@ public class Phrases : MonoBehaviour
     /// in generating spaces and letter blocks.
     /// </summary>
     
-    
-    public List<string> phrases;
-	public List<string> hints;
-	public Text hintText;
+    public List<string> phrases; //
+	public List<string> hints; // 
+	public Text hintText; //
 
-    private string currentPhrase;
-    public GameObject blockPrefab;
-	public GameObject emptyBlockPrefab;
-    public GameObject underscorePrefab;
-	public Text scoreText;
-	public Text timerText;
+    private string currentPhrase; //
+
+    public GameObject blockPrefab; //
+	public GameObject emptyBlockPrefab; //
+    public GameObject underscorePrefab; //
+
+	public Text scoreText; //
+	public Text timerText; //
+
 	public Transform box;
 	public Transform stick;
-	public bool playing;
-	public Text finalScore;
-	public GameObject ggMenu;
+	public float stickOffsetX;
+	public float stickOffsetY;
+	public bool playing; //
+	public Text finalScore; //
+	public GameObject ggMenu; //
 
-	private float roundTimer;
-	private int score;
+	private float roundTimer; //
+	private int score; //
     private int screenCenter;
 	private List<Underscore> underscores;
 	private List<Transform> blocks;
 	private float blockWidth;
+
     /// <summary>
     /// ChoosePhrase() is used to 
     /// determine the phrase to be
     /// used in generation of the 
     /// spaces and letter blocks.
     /// </summary>
+
+	// Using to test functions for now
+	void Start()
+	{
+		score = 0;
+		roundTimer = 120f;
+
+		underscores = new List<Underscore> ();
+		blocks = new List<Transform> ();
+
+		blockWidth = blockPrefab.GetComponentInChildren<SpriteRenderer> ().bounds.size.x + 1.2f;
+		currentPhrase = "";
+		ChoosePhrase();
+		SortPhrase();
+	}
 
     void ChoosePhrase()
     {
@@ -53,10 +73,9 @@ public class Phrases : MonoBehaviour
 		while (currentPhrase == phrases [i])
 		{
 			i = Random.Range(0, phrases.Count);
-
 		}
 		currentPhrase = phrases[i];
-		hintText.text = hints [i];
+		hintText.text = hints[i];
 
         Debug.Log(currentPhrase);
     }
@@ -80,7 +99,7 @@ public class Phrases : MonoBehaviour
 			{
 				playing = false;
 				ggMenu.SetActive (true);
-				finalScore.text = score.ToString ();
+				finalScore.text = score.ToString();
 			}
 		}
 
@@ -93,12 +112,12 @@ public class Phrases : MonoBehaviour
 
     void SortPhrase()
     {
-		float x = 60 + blockWidth;
-		float y = -26;
+		float x = stickOffsetX + blockWidth;
+		float y = stickOffsetY;
 		int nextSpace = 0;
 		for (int i = 0; i < currentPhrase.Length; i++) 
 		{
-			if (currentPhrase [i] == ' ') 
+			if (currentPhrase[i] == ' ') 
 			{
 				nextSpace = i;
 				break;
@@ -116,9 +135,8 @@ public class Phrases : MonoBehaviour
 				t.SetParent(stick);
 				if (x - blockWidth *(nextSpace - i) <= 60 - blockWidth * 9 && y == -26) 
 				{
-					
-
-					while (x >= 60 - blockWidth * 10) {
+					while (x >= 60 - blockWidth * 10)
+					{
 						Transform empty = Instantiate(emptyBlockPrefab).transform;
 						empty.SetParent(stick);
 						empty.localPosition = new Vector2(x,y);
@@ -130,7 +148,8 @@ public class Phrases : MonoBehaviour
 				}
 				else if (x - blockWidth *(nextSpace - i) <= 60 - blockWidth * 9 && y == -14) 
 				{
-					while (x >= 60 - blockWidth * 10) {
+					while (x >= 60 - blockWidth * 10)
+					{
 						Transform empty = Instantiate(emptyBlockPrefab).transform;
 						empty.SetParent(stick);
 						empty.localPosition = new Vector2(x,y);
@@ -156,7 +175,9 @@ public class Phrases : MonoBehaviour
 					}
 				}
 				if (nextSpace <= i)
-					nextSpace = currentPhrase.Length-1;
+				{
+					nextSpace = currentPhrase.Length - 1;
+				}
 
 
 
@@ -218,7 +239,7 @@ public class Phrases : MonoBehaviour
 			{
 				same = false;
 			}
-		}while(same == true);
+		} while(same == true);
 
 	
 		Letter l = Instantiate (blockPrefab).GetComponent<Letter> ();
@@ -250,14 +271,16 @@ public class Phrases : MonoBehaviour
 		string currentPhraseNoSpaces = "";
 		for (int i = 0; i < currentPhrase.Length; i++) 
 		{
-			if (currentPhrase [i] != ' ') {
+			if (currentPhrase [i] != ' ')
+			{
 				currentPhraseNoSpaces += currentPhrase [i];
 			}
 		}
 
 		for (int i = 0; i < underscores.Count; i++) 
 		{
-			if (underscores [i].transform.childCount >= 1) {
+			if (underscores [i].transform.childCount >= 1)
+			{
 				if (underscores [i].transform.childCount > 1) 
 				{
 					Letter l = underscores [i].transform.GetComponentInChildren<Letter>();
@@ -314,26 +337,13 @@ public class Phrases : MonoBehaviour
 		SortPhrase();
 		roundTimer += 60f;
 	}
+
 	public void Restart()
 	{
 		Reset ();
 		roundTimer = 120;
 		playing = true;
 	}
-
-    // Using to test functions for now
-
-	void Start()
-    {
-		score = 0;
-		roundTimer = 120f;
-		underscores = new List<Underscore> ();
-		blocks = new List<Transform> ();
-		blockWidth = blockPrefab.GetComponentInChildren<SpriteRenderer> ().bounds.size.x + 1.2f;
-		currentPhrase = "";
-        ChoosePhrase();
-        SortPhrase();
-    }
 }
 
 

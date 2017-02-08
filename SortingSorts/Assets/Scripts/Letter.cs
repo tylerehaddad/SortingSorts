@@ -27,7 +27,6 @@ public class Letter : MonoBehaviour
 	{
 		gameObject.GetComponent<SpriteRenderer> ().flipY = true;
 		gameObject.GetComponent<SpriteRenderer> ().flipX = true;
-
 	}
 
     public void AssignLetter()
