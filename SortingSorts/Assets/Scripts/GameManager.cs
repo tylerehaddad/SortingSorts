@@ -19,6 +19,10 @@ public class GameManager : MonoBehaviour {
 	public List<string> phrases;
 	public List<string> hints;
 
+	[Header("Tutorials:")]
+	public List<GameObject> tutorials;
+	public GameObject tutorialMenu;
+
 	[Header("UI References:")]
 	public Text hintText;
 	public Text scoreText;
@@ -59,12 +63,17 @@ public class GameManager : MonoBehaviour {
 	//Judgemental Variables.
 	private float blockWidth;
 
+	//Tutorial Variables.\
+	private int currentTutorial;
+
 	void Start ()
 	{
 		//Init Variables.
 		score = 0;
 		roundTimer = roundTimerStart;
 		currentPhrase = "";
+
+		currentTutorial = 0;
 
 		//Init Lists.
 		underscores = new List<Underscore> ();
@@ -90,6 +99,22 @@ public class GameManager : MonoBehaviour {
 				playing = false;
 				gameOverMenu.SetActive (true);
 				finalScore.text = score.ToString();
+			}
+		}
+
+		//Tutorial
+		if (tutorialMenu.activeSelf == true)
+		{
+			tutorials[currentTutorial].SetActive(true);
+			for(int i = 0; i < tutorials.Count; i++)
+			{
+				if(tutorials[i].activeSelf == true)
+				{
+					if (i != currentTutorial)
+					{
+						tutorials[i].SetActive(false);
+					}
+				}
 			}
 		}
 
@@ -380,6 +405,26 @@ public class GameManager : MonoBehaviour {
 		ChoosePhrase();
 		SortPhrase();
 		roundTimer += 60f;
+	}
+
+	//Change the current tutorial.
+	public void TutorialChange(bool postive)
+	{
+		if (postive)
+		{
+			currentTutorial++;
+		} else
+		{
+			currentTutorial--;
+		}
+
+		if (currentTutorial < 0)
+		{
+			currentTutorial = tutorials.Count - 1;
+		} else if(currentTutorial > tutorials.Count - 1)
+		{
+			currentTutorial = 0;
+		}
 	}
 
 	//Restart the game.
