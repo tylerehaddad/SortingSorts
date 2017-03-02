@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour {
 	public Text scoreText;
 	public Text timerText;
 	public GameObject gameOverMenu;
+	public GameObject menu;
 	public Text finalScore;
 
 	[Header("UI Labels:")]
@@ -88,7 +89,10 @@ public class GameManager : MonoBehaviour {
 		if (playing) 
 		{
 			//Display the Timer.
-			timerText.text = roundTimer.ToString ("##.##");
+			string minutes = Mathf.Floor(roundTimer / 60).ToString("00");
+			string seconds = (roundTimer % 60).ToString("00");
+			timerText.text = Mathf.Floor(roundTimer / 60).ToString("00") + ":" + Mathf.Floor(roundTimer % 60).ToString("00");
+			//timerText.text = roundTimer.ToString ("##.##");
 
 			//Oh no! The time is going down! 
 			roundTimer -= Time.deltaTime;
@@ -121,7 +125,15 @@ public class GameManager : MonoBehaviour {
 		//Bail! Abandon ship!
 		if (Input.GetKey ("escape"))
 		{
-			QuitApp ();
+			if (menu.activeSelf == true)
+			{
+				QuitApp ();
+			} else
+			{
+				playing = false;
+
+				menu.SetActive (true);
+			}
 		}
 	}
 
@@ -130,13 +142,11 @@ public class GameManager : MonoBehaviour {
 	{
 		playing = true;
 
+		Reset ();
+
 		//Set the Variables.
 		score = 0;
 		roundTimer = roundTimerStart;
-
-		//Do the things.
-		ChoosePhrase ();
-		SortPhrase();
 	}
 
 	//OH BOI, WHAT PHRASE IS IT GOING TO THROW AT ME?!?
@@ -211,7 +221,7 @@ public class GameManager : MonoBehaviour {
 					y = stickOffsetY + 12;
 					x = stickOffsetX;
 				}
-				else if (x - blockWidth *(nextSpace - i) <= stickOffsetX - blockWidth * 9 && y == stickOffsetY + 12) 
+				else if (x - blockWidth * (nextSpace - i) <= stickOffsetX - blockWidth * 9 && y == stickOffsetY + 12) 
 				{
 					while (x >= stickOffsetX - blockWidth * 10)
 					{
@@ -387,12 +397,12 @@ public class GameManager : MonoBehaviour {
 
 		for (int i = 0; i < blocks.Count; i++) 
 		{
-			Destroy (blocks [i].gameObject);
+			Destroy (blocks[i].gameObject);
 		}
 
 		for (int i = 0; i < underscores.Count; i++) 
 		{
-			Destroy (underscores [i].gameObject);
+			Destroy (underscores[i].gameObject);
 		}
 
 		foreach (GameObject g in GameObject.FindGameObjectsWithTag ("EmptyBlock"))
@@ -430,7 +440,6 @@ public class GameManager : MonoBehaviour {
 	//Restart the game.
 	public void Restart()
 	{
-		Reset ();
 		Play ();
 	}
 
