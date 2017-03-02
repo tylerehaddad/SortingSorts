@@ -1,7 +1,7 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{21A5D78F-7822-A700-214C-DA5ECB25FFE0}") = "SortingSorts", "Assembly-CSharp.csproj", "{A5BC4171-2DEF-81E4-BB00-7D4F65F7F4F5}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortingSorts", "Assembly-CSharp.csproj", "{A5BC4171-2DEF-81E4-BB00-7D4F65F7F4F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
