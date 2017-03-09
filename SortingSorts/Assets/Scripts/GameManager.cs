@@ -92,7 +92,6 @@ public class GameManager : MonoBehaviour {
 			string minutes = Mathf.Floor(roundTimer / 60).ToString("00");
 			string seconds = (roundTimer % 60).ToString("00");
 			timerText.text = Mathf.Floor(roundTimer / 60).ToString("00") + ":" + Mathf.Floor(roundTimer % 60).ToString("00");
-			//timerText.text = roundTimer.ToString ("##.##");
 
 			//Oh no! The time is going down! 
 			roundTimer -= Time.deltaTime;
@@ -106,7 +105,7 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-		//Tutorial
+		//This activates the current tutorial gameobject on the tutorial menu.
 		if (tutorialMenu.activeSelf == true)
 		{
 			tutorials[currentTutorial].SetActive(true);
@@ -127,11 +126,14 @@ public class GameManager : MonoBehaviour {
 		{
 			if (menu.activeSelf == true)
 			{
+				//*rage quits*
 				QuitApp ();
 			} else
 			{
+				//The player has given up.
 				playing = false;
 
+				//Make the menu exist again.
 				menu.SetActive (true);
 			}
 		}
@@ -140,8 +142,10 @@ public class GameManager : MonoBehaviour {
 	//Yo! Start up the game!
 	public void Play()
 	{
+		//Is the player playing? Hell yea they are.
 		playing = true;
 
+		//Nuke the playing field.
 		Reset ();
 
 		//Set the Variables.
@@ -170,6 +174,8 @@ public class GameManager : MonoBehaviour {
 		//Debug this!
 		Debug.Log(currentPhrase);
 	}
+
+	// ------------------ I DON'T UNDERSTAND -----------------------
 
 	//Sort out the phrase.
 	void SortPhrase()
@@ -255,8 +261,6 @@ public class GameManager : MonoBehaviour {
 				{
 					nextSpace = currentPhrase.Length - 1;
 				}
-
-
 
 				Transform t = Instantiate(emptyBlockPrefab).transform;
 				t.SetParent(stick);
@@ -391,35 +395,44 @@ public class GameManager : MonoBehaviour {
 		}
 
 	}
+	// ------------------ END OF ME NOT UNDERSTANDING -----------------------
 
 	void Reset()
 	{
-
+		//Destroy all the blocks.
 		for (int i = 0; i < blocks.Count; i++) 
 		{
 			Destroy (blocks[i].gameObject);
 		}
 
+		//Destroy underscores.
 		for (int i = 0; i < underscores.Count; i++) 
 		{
 			Destroy (underscores[i].gameObject);
 		}
 
+		//Destroy the empty blocks.
 		foreach (GameObject g in GameObject.FindGameObjectsWithTag ("EmptyBlock"))
 		{
 			Destroy (g);
 		}
 
+		//Reset the game lists.
 		underscores = new List<Underscore> ();
 		blocks = new List<Transform> ();
+
+		//New phrase.
 		ChoosePhrase();
 		SortPhrase();
+
+		//Give the player a boost in time.
 		roundTimer += 60f;
 	}
 
 	//Change the current tutorial.
 	public void TutorialChange(bool postive)
 	{
+		//Advance in the tutorial.
 		if (postive)
 		{
 			currentTutorial++;
@@ -428,6 +441,7 @@ public class GameManager : MonoBehaviour {
 			currentTutorial--;
 		}
 
+		//Loop the tutorial.
 		if (currentTutorial < 0)
 		{
 			currentTutorial = tutorials.Count - 1;
