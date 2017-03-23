@@ -89,8 +89,6 @@ public class GameManager : MonoBehaviour {
 		if (playing) 
 		{
 			//Display the Timer.
-			string minutes = Mathf.Floor(roundTimer / 60).ToString("00");
-			string seconds = (roundTimer % 60).ToString("00");
 			timerText.text = Mathf.Floor(roundTimer / 60).ToString("00") + ":" + Mathf.Floor(roundTimer % 60).ToString("00");
 
 			//Oh no! The time is going down! 
