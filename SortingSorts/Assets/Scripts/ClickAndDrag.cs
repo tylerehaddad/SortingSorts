@@ -9,6 +9,7 @@ public class ClickAndDrag : MonoBehaviour
     public Vector3 touchPosition;
     public Vector3 offset;
     public Vector3 newGOCenter;
+	public GameManager gameManager;
 
 	public LayerMask blocks, underscores;
 
@@ -31,6 +32,13 @@ public class ClickAndDrag : MonoBehaviour
                 touchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 offset = touchPosition - GOCenter;
                 dragging = true;
+
+				if (gameManager.grabTutorial == true)
+				{
+					gameManager.grabTutorial = false;
+					gameManager.placeTutorial = true;
+				}
+
 				clickTimer = 0;
 				if (Physics.Raycast (ray, out hit, 100, underscores)) {
 					hit.collider.gameObject.GetComponent<Underscore> ().taken = false;
@@ -54,23 +62,10 @@ public class ClickAndDrag : MonoBehaviour
             }
         }
 
-
-
         if (Input.GetMouseButtonUp(0))
         {
 			if (dragging) 
 			{
-				/*if (clickTimer < 0.2f) 
-				{
-					Underscore u = phrasesRef.getNextUnderscore ();
-					if (u != null) 
-					{
-						u.taken = true;
-						selectedBlock.transform.position = new Vector2(u.transform.position.x, u.transform.position.y + 0.5f);
-						selectedBlock.transform.SetParent (u.transform);
-					}
-
-				}*/
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				if (Physics.Raycast (ray, out hit, 100, underscores)) 
 				{
@@ -84,6 +79,11 @@ public class ClickAndDrag : MonoBehaviour
 				}
 
 				dragging = false;
+
+				if (gameManager.placeTutorial == true)
+				{
+					gameManager.placeTutorial = false;
+				}
 			}
         }
     }

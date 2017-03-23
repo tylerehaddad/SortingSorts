@@ -34,6 +34,17 @@ public class GameManager : MonoBehaviour {
 	[Header("UI Labels:")]
 	public string hintTextLabel;
 
+	[Header("Tutorial UI References:")]
+	public GameObject grabArrow;
+	public Text grabText;
+	public GameObject placeArrow;
+	public Text placeText;
+	public GameObject printArrow;
+	public Text printText;
+
+	[Header("Tutorial UI Variables:")]
+	public float tutorialArrowLerpSpeed = 0.125f;
+
 	[Header("Prefabs:")]
 	public GameObject blockPrefab;
 	public GameObject emptyBlockPrefab;
@@ -49,6 +60,10 @@ public class GameManager : MonoBehaviour {
 
 	[HideInInspector]
 	public bool playing;
+	public bool grabTutorial = true;
+	public bool placeTutorial = false;
+	public bool printTutorial = true;
+	private bool printTutorialDrawn = false;
 
 	//Phrase Variables.
 	private string currentPhrase;
@@ -64,8 +79,18 @@ public class GameManager : MonoBehaviour {
 	//Judgemental Variables.
 	private float blockWidth;
 
-	//Tutorial Variables.\
+	//Tutorial Variables.
 	private int currentTutorial;
+
+	//Tutorial UI Images.
+	private Image grabImage;
+	private Image placeImage;
+	private Image printImage;
+
+	//Tutorial UI Alphas.
+	private float grabAlpha = 1f;
+	private float placeAlpha = 0f;
+	private float printAlpha = 0f;
 
 	void Start ()
 	{
@@ -82,26 +107,106 @@ public class GameManager : MonoBehaviour {
 
 		//I'M NOT FAT, I'M JUST BIG BONED.
 		blockWidth = blockPrefab.GetComponentInChildren<SpriteRenderer> ().bounds.size.x + 1.2f;
+
+		printTutorial = true;
 	}
 
 	void Update ()
 	{
-		if (playing) 
+		if (playing)
 		{
 			//Display the Timer.
-			timerText.text = Mathf.Floor(roundTimer / 60).ToString("00") + ":" + Mathf.Floor(roundTimer % 60).ToString("00");
+			timerText.text = Mathf.Floor (roundTimer / 60).ToString ("00") + ":" + Mathf.Floor (roundTimer % 60).ToString ("00");
 
 			//Oh no! The time is going down! 
 			roundTimer -= Time.deltaTime;
 
+			printTutorialDrawn = true;
+
 			//Game Over! You suck!
-			if (roundTimer < 0) 
+			if (roundTimer < 0)
 			{
 				playing = false;
 				gameOverMenu.SetActive (true);
-				finalScore.text = score.ToString();
+				finalScore.text = score.ToString ();
 			}
+		} else
+		{
+			printTutorialDrawn = false;
 		}
+
+		//Arrow Alphas.
+		if (grabTutorial == true)
+		{
+			grabAlpha = Mathf.Lerp (grabAlpha, 1, tutorialArrowLerpSpeed);
+		} else
+		{
+			grabAlpha = Mathf.Lerp (grabAlpha, 0, tutorialArrowLerpSpeed);
+		}
+
+		if (placeTutorial == true)
+		{
+			placeAlpha = Mathf.Lerp (placeAlpha, 1, tutorialArrowLerpSpeed);
+		} else
+		{
+			placeAlpha = Mathf.Lerp (placeAlpha, 0, tutorialArrowLerpSpeed);
+		}
+
+
+
+		if (printTutorial == true)
+		{
+			for (int i = 0; i < underscores.Count; i++)
+			{
+				if (underscores [i].transform.childCount <= 1)
+				{
+					print (underscores [i].transform.childCount);
+					printTutorialDrawn = false;
+				}
+			}
+		} else
+		{
+			printTutorialDrawn = false;
+			print("it's false");
+		}
+
+		if (printTutorialDrawn == true)
+		{
+			printAlpha = Mathf.Lerp (printAlpha, 1, tutorialArrowLerpSpeed);
+		} else
+		{
+			printAlpha = Mathf.Lerp (printAlpha, 0, tutorialArrowLerpSpeed);
+		}
+
+		//Set the alphas.
+		grabImage = grabArrow.GetComponent<Image>();
+		Color grabArrowColor = grabImage.color;
+		grabArrowColor.a = grabAlpha;
+		grabImage.color = grabArrowColor;
+
+		Color grabTextColor = grabText.color;
+		grabTextColor.a = grabAlpha;
+		grabText.color = grabTextColor;
+
+
+		placeImage = placeArrow.GetComponent<Image>();
+		Color placeArrowColor = placeImage.color;
+		placeArrowColor.a = placeAlpha;
+		placeImage.color = placeArrowColor;
+
+		Color placeTextColor = placeText.color;
+		placeTextColor.a = placeAlpha;
+		placeText.color = placeTextColor;
+
+
+		printImage = printArrow.GetComponent<Image>();
+		Color printArrowColor = printImage.color;
+		printArrowColor.a = printAlpha;
+		printImage.color = printArrowColor;
+
+		Color printTextColor = printText.color;
+		printTextColor.a = printAlpha;
+		printText.color = printTextColor;
 
 		//This activates the current tutorial gameobject on the tutorial menu.
 		if (tutorialMenu.activeSelf == true)
@@ -348,6 +453,7 @@ public class GameManager : MonoBehaviour {
 	//test if the phrase is correct
 	public void testPhrase()
 	{
+		printTutorial = false;
 		string submitted = "";
 		string currentPhraseNoSpaces = "";
 		for (int i = 0; i < currentPhrase.Length; i++) 
