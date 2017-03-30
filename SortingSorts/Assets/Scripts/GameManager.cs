@@ -225,7 +225,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 		//Bail! Abandon ship!
-		if (Input.GetKey ("escape"))
+		if (Input.GetKeyDown ("escape"))
 		{
 			if (menu.activeSelf == true)
 			{
