@@ -1,13 +1,9 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Letter.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameManager.cs" Line="230" Column="32" />
-      <File FileName="Assets\Scripts\Underscore.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Letter.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ClickAndDrag.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\SinRotate.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\SinMovement.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/GameManager.cs" Line="168" Column="31" />
+      <File FileName="Assets/Scripts/Letter.cs" Line="31" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
