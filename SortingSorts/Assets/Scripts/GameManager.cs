@@ -160,14 +160,12 @@ public class GameManager : MonoBehaviour {
 			{
 				if (underscores [i].transform.childCount <= 1)
 				{
-					print (underscores [i].transform.childCount);
 					printTutorialDrawn = false;
 				}
 			}
 		} else
 		{
 			printTutorialDrawn = false;
-			print("it's false");
 		}
 
 		if (printTutorialDrawn == true)
@@ -323,7 +321,7 @@ public class GameManager : MonoBehaviour {
 					{
 						Transform empty = Instantiate(emptyBlockPrefab).transform;
 						empty.SetParent(stick);
-						empty.localPosition = new Vector2(x,y);
+						empty.localPosition = new Vector2(-x,y);
 						x -= blockWidth;
 					}
 
@@ -336,7 +334,7 @@ public class GameManager : MonoBehaviour {
 					{
 						Transform empty = Instantiate(emptyBlockPrefab).transform;
 						empty.SetParent(stick);
-						empty.localPosition = new Vector2(x,y);
+						empty.localPosition = new Vector2(-x,y);
 						x -= blockWidth;
 					}
 					y = -2;
@@ -344,7 +342,7 @@ public class GameManager : MonoBehaviour {
 				}
 
 				//Move it to it's new home.
-				t.localPosition = new Vector2(x,y);
+				t.localPosition = new Vector2(-x,y);
 
 				//Add it to the list.
 				underscores.Add (t.GetComponent<Underscore>());
@@ -367,7 +365,7 @@ public class GameManager : MonoBehaviour {
 
 				Transform t = Instantiate(emptyBlockPrefab).transform;
 				t.SetParent(stick);
-				t.localPosition = new Vector2(x,y);
+				t.localPosition = new Vector2(-x,y);
 
 			}
 		}
