@@ -54,6 +54,8 @@ public class GameManager : MonoBehaviour {
 	public Transform stick;
 	public float stickOffsetX;
 	public float stickOffsetY;
+	public float lineMax = 3;
+	public float lineAmount = 10;
 
 	[Header("Balanceable Variables:")]
 	public float roundTimerStart = 120f;
@@ -78,6 +80,7 @@ public class GameManager : MonoBehaviour {
 
 	//Judgemental Variables.
 	private float blockWidth;
+	private float blockHeight = 11;
 
 	//Tutorial Variables.
 	private int currentTutorial;
@@ -106,7 +109,7 @@ public class GameManager : MonoBehaviour {
 		blocks = new List<Transform> ();
 
 		//I'M NOT FAT, I'M JUST BIG BONED.
-		blockWidth = blockPrefab.GetComponentInChildren<SpriteRenderer> ().bounds.size.x + 1.2f;
+		blockWidth = blockPrefab.GetComponentInChildren<SpriteRenderer> ().bounds.size.x;
 
 		printTutorial = true;
 	}
@@ -276,18 +279,98 @@ public class GameManager : MonoBehaviour {
 		Debug.Log(currentPhrase);
 	}
 
+	void OnDrawGizmos()
+	{
+		Gizmos.color = Color.red;
+		float size = 0.3f;
+
+		Vector3 stickOffset = new Vector3 (stick.position.x + stickOffsetX, stick.position.y + stickOffsetY, 0f);
+		Gizmos.DrawLine (stickOffset - Vector3.up * size, stickOffset + Vector3.up * size);
+		Gizmos.DrawLine (stickOffset - Vector3.left * size, stickOffset + Vector3.left * size);
+	}
+
 	// ------------------ I DON'T UNDERSTAND -----------------------
 
 	//Sort out the phrase.
 	void SortPhrase()
 	{
-		float x = stickOffsetX + blockWidth;
-		float y = stickOffsetY;
+		float x = stick.position.x + stickOffsetX;
+		float y = stick.position.y + stickOffsetY;
 
+		int position = 0;
+		int positionPhrase = 0;
+		int nextSpace = 0;
+
+		//Finds the first space.
+		for (int n = 0; n < currentPhrase.Length; n++) 
+		{
+			if (currentPhrase[n] == ' ') 
+			{
+				nextSpace = n - 1;
+				break;
+			}
+		}
+
+		while(position < lineMax * lineAmount)
+		{
+			x = stick.position.x + stickOffsetX - blockWidth * (position - (Mathf.Floor(position/lineAmount) * lineAmount));
+			y = stick.position.y + stickOffsetY - blockHeight * (Mathf.Floor(position/lineAmount));
+
+			if (positionPhrase < currentPhrase.Length)
+			{
+				//PROBLEM AREA----------------------------------------------------------------------------------------------------------------
+				if (currentPhrase [positionPhrase] != ' ' && nextSpace <= ((Mathf.Floor(position/lineAmount) + 1) * lineAmount))
+				{
+					//Spawn the character we are currently on as a block.
+					GenerateBlocks (currentPhrase [positionPhrase]);
+
+					//Creates the underscore.
+					Transform t = Instantiate (underscorePrefab).transform;
+
+					//Parents it.
+					t.SetParent (stick);
+
+					t.position = new Vector2 (x, y);
+
+					positionPhrase++;
+				} else
+				{
+					//Edit how this works to fix space being on the next line.
+					if(currentPhrase [positionPhrase] == ' ' && nextSpace < positionPhrase)
+					{
+						for (int j = positionPhrase + 1; j < currentPhrase.Length; j++) 
+						{
+							if (currentPhrase [j] == ' ') 
+							{
+								nextSpace = j - 2;
+								break;
+							}
+						}
+
+						positionPhrase++;
+					}
+
+					Transform empty = Instantiate (emptyBlockPrefab).transform;
+					empty.SetParent (stick);
+					empty.position = new Vector2 (x, y);
+				}
+				//END OF PROBLEM AREA---------------------------------------------------------------------------------------
+			} else
+			{
+				Transform empty = Instantiate(emptyBlockPrefab).transform;
+				empty.SetParent(stick);
+				empty.position = new Vector2(x, y);
+			}
+
+			//Next position.
+			position++;
+		}
+	}
+		/*
 		//When is the next space?
 		int nextSpace = 0;
 
-		//Finds the next space.
+		//Finds the first space.
 		for (int i = 0; i < currentPhrase.Length; i++) 
 		{
 			if (currentPhrase[i] == ' ') 
@@ -297,6 +380,67 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
+		for (int i = 0; i < currentPhrase.Length; i++)
+		{
+			if (currentPhrase [i] != ' ')
+			{
+				//Spawn the character we are currently on as a block.
+				GenerateBlocks(currentPhrase[i]);
+
+				//Creates the underscore.
+				Transform t = Instantiate(underscorePrefab).transform;
+
+				//Parents it.
+				t.SetParent(stick);
+
+				if (lineAmount + (nextSpace - i - (line * lineLength)) >= lineLength || i == currentPhrase.Length) 
+				{
+					//Adds empty blocks until the end of the line.
+					while (lineAmount <= lineLength)
+					{
+						Transform empty = Instantiate(emptyBlockPrefab).transform;
+						empty.SetParent(stick);
+						empty.position = new Vector2(x, y + (line * -11));
+						x -= blockWidth;
+						lineAmount++;
+					}
+
+					line++;
+					lineAmount = 0;
+					x = stick.position.x + stickOffsetX;
+				}
+
+				//Move it to it's new home.
+				t.position = new Vector2(x, y + (line * -11));
+
+				//Add it to the list.
+				underscores.Add (t.GetComponent<Underscore>());
+			} else
+			{
+				//Find Next Word's Length
+				for (int j = i + 1; j < currentPhrase.Length; j++) 
+				{
+					if (currentPhrase [j] == ' ') 
+					{
+						nextSpace = j - 1;
+						break;
+					}
+				}
+				if (nextSpace <= i)
+				{
+					nextSpace = currentPhrase.Length - 1;
+				}
+					
+				Transform t = Instantiate(emptyBlockPrefab).transform;
+				t.SetParent(stick);
+				t.position = new Vector2(x, y + (line * -11));
+			}
+
+			x -= blockWidth;
+			lineAmount++;
+		}
+
+		/*
 		for (int i = 0; i < currentPhrase.Length; i++)
 		{
 			x -= blockWidth;
@@ -317,11 +461,11 @@ public class GameManager : MonoBehaviour {
 				if (x - blockWidth * (nextSpace - i) <= stickOffsetX - blockWidth * 9 && y == stickOffsetY) 
 				{
 					//Adds empty blocks until the end of the line.
-					while (x >= stickOffsetX - blockWidth * 10)
+					while (x >= stickOffsetX - blockWidth * 9)
 					{
 						Transform empty = Instantiate(emptyBlockPrefab).transform;
 						empty.SetParent(stick);
-						empty.localPosition = new Vector2(-x,y);
+						empty.localPosition = new Vector2(x, y);
 						x -= blockWidth;
 					}
 
@@ -334,7 +478,7 @@ public class GameManager : MonoBehaviour {
 					{
 						Transform empty = Instantiate(emptyBlockPrefab).transform;
 						empty.SetParent(stick);
-						empty.localPosition = new Vector2(-x,y);
+						empty.localPosition = new Vector2(x,y);
 						x -= blockWidth;
 					}
 					y = -2;
@@ -342,19 +486,19 @@ public class GameManager : MonoBehaviour {
 				}
 
 				//Move it to it's new home.
-				t.localPosition = new Vector2(-x,y);
+				t.localPosition = new Vector2(x, y);
 
 				//Add it to the list.
 				underscores.Add (t.GetComponent<Underscore>());
 			}
 			else
 			{
-				//Find Next Word Last I
-				for (int j = i+1; j < currentPhrase.Length; j++) 
+				//Find Next Word's Length
+				for (int j = i + 1; j < currentPhrase.Length; j++) 
 				{
 					if (currentPhrase [j] == ' ') 
 					{
-						nextSpace = j-1;
+						nextSpace = j - 1;
 						break;
 					}
 				}
@@ -365,11 +509,11 @@ public class GameManager : MonoBehaviour {
 
 				Transform t = Instantiate(emptyBlockPrefab).transform;
 				t.SetParent(stick);
-				t.localPosition = new Vector2(-x,y);
-
+				t.localPosition = new Vector2(x, y);
 			}
 		}
 	}
+		*/
 
 	void GenerateBlocks(char c)
 	{
