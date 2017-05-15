@@ -174,6 +174,7 @@ public class GameManager : MonoBehaviour {
 		if (printTutorialDrawn == true)
 		{
 			printAlpha = Mathf.Lerp (printAlpha, 1, tutorialArrowLerpSpeed);
+
 		} else
 		{
 			printAlpha = Mathf.Lerp (printAlpha, 0, tutorialArrowLerpSpeed);
@@ -307,6 +308,7 @@ public class GameManager : MonoBehaviour {
 			if (currentPhrase[n] == ' ') 
 			{
 				nextSpace = n - 1;
+				Debug.Log ("The next space is at " + nextSpace);
 				break;
 			}
 		}
@@ -319,10 +321,12 @@ public class GameManager : MonoBehaviour {
 			if (positionPhrase < currentPhrase.Length)
 			{
 				//PROBLEM AREA----------------------------------------------------------------------------------------------------------------
-				if (currentPhrase [positionPhrase] != ' ' && nextSpace <= ((Mathf.Floor(position/lineAmount) + 1) * lineAmount))
+				if (currentPhrase [positionPhrase] != ' ' && nextSpace < ((Mathf.Floor(position/lineAmount) + 1) * lineAmount))
 				{
 					//Spawn the character we are currently on as a block.
 					GenerateBlocks (currentPhrase [positionPhrase]);
+
+					Debug.Log (currentPhrase [positionPhrase] + " at " + positionPhrase);
 
 					//Creates the underscore.
 					Transform t = Instantiate (underscorePrefab).transform;
@@ -332,29 +336,43 @@ public class GameManager : MonoBehaviour {
 
 					t.position = new Vector2 (x, y);
 
+					underscores.Add (t.GetComponent<Underscore>());
+
 					positionPhrase++;
 				} else
 				{
 					//Edit how this works to fix space being on the next line.
-					if(currentPhrase [positionPhrase] == ' ' && nextSpace < positionPhrase)
+					if(currentPhrase [positionPhrase] == ' ')
 					{
+						Debug.Log ("There is infact a space.");
 						for (int j = positionPhrase + 1; j < currentPhrase.Length; j++) 
 						{
 							if (currentPhrase [j] == ' ') 
 							{
-								nextSpace = j - 2;
+								nextSpace = j - 1;
+								Debug.Log ("The next space is at " + nextSpace);
 								break;
 							}
+						}
+
+						if (nextSpace <= positionPhrase)
+						{
+							nextSpace = currentPhrase.Length + 1;
 						}
 
 						positionPhrase++;
 					}
 
-					Transform empty = Instantiate (emptyBlockPrefab).transform;
-					empty.SetParent (stick);
-					empty.position = new Vector2 (x, y);
+					if (position - (Mathf.Floor (position / lineAmount) * lineAmount) != 0 && currentPhrase [positionPhrase] != ' ')
+					{
+						Transform empty = Instantiate (emptyBlockPrefab).transform;
+						empty.SetParent (stick);
+						empty.position = new Vector2 (x, y);
+					} else
+					{
+						position--;
+					}
 				}
-				//END OF PROBLEM AREA---------------------------------------------------------------------------------------
 			} else
 			{
 				Transform empty = Instantiate(emptyBlockPrefab).transform;
@@ -366,154 +384,6 @@ public class GameManager : MonoBehaviour {
 			position++;
 		}
 	}
-		/*
-		//When is the next space?
-		int nextSpace = 0;
-
-		//Finds the first space.
-		for (int i = 0; i < currentPhrase.Length; i++) 
-		{
-			if (currentPhrase[i] == ' ') 
-			{
-				nextSpace = i;
-				break;
-			}
-		}
-
-		for (int i = 0; i < currentPhrase.Length; i++)
-		{
-			if (currentPhrase [i] != ' ')
-			{
-				//Spawn the character we are currently on as a block.
-				GenerateBlocks(currentPhrase[i]);
-
-				//Creates the underscore.
-				Transform t = Instantiate(underscorePrefab).transform;
-
-				//Parents it.
-				t.SetParent(stick);
-
-				if (lineAmount + (nextSpace - i - (line * lineLength)) >= lineLength || i == currentPhrase.Length) 
-				{
-					//Adds empty blocks until the end of the line.
-					while (lineAmount <= lineLength)
-					{
-						Transform empty = Instantiate(emptyBlockPrefab).transform;
-						empty.SetParent(stick);
-						empty.position = new Vector2(x, y + (line * -11));
-						x -= blockWidth;
-						lineAmount++;
-					}
-
-					line++;
-					lineAmount = 0;
-					x = stick.position.x + stickOffsetX;
-				}
-
-				//Move it to it's new home.
-				t.position = new Vector2(x, y + (line * -11));
-
-				//Add it to the list.
-				underscores.Add (t.GetComponent<Underscore>());
-			} else
-			{
-				//Find Next Word's Length
-				for (int j = i + 1; j < currentPhrase.Length; j++) 
-				{
-					if (currentPhrase [j] == ' ') 
-					{
-						nextSpace = j - 1;
-						break;
-					}
-				}
-				if (nextSpace <= i)
-				{
-					nextSpace = currentPhrase.Length - 1;
-				}
-					
-				Transform t = Instantiate(emptyBlockPrefab).transform;
-				t.SetParent(stick);
-				t.position = new Vector2(x, y + (line * -11));
-			}
-
-			x -= blockWidth;
-			lineAmount++;
-		}
-
-		/*
-		for (int i = 0; i < currentPhrase.Length; i++)
-		{
-			x -= blockWidth;
-
-			//Word Wrapping.
-			if (currentPhrase[i] != ' ')
-			{
-				//Spawn the character we are currently on as a block.
-				GenerateBlocks(currentPhrase[i]);
-
-				//Creates the underscore.
-				Transform t = Instantiate(underscorePrefab).transform;
-
-				//Parents it.
-				t.SetParent(stick);
-
-
-				if (x - blockWidth * (nextSpace - i) <= stickOffsetX - blockWidth * 9 && y == stickOffsetY) 
-				{
-					//Adds empty blocks until the end of the line.
-					while (x >= stickOffsetX - blockWidth * 9)
-					{
-						Transform empty = Instantiate(emptyBlockPrefab).transform;
-						empty.SetParent(stick);
-						empty.localPosition = new Vector2(x, y);
-						x -= blockWidth;
-					}
-
-					y = stickOffsetY + 12;
-					x = stickOffsetX;
-				}
-				else if (x - blockWidth * (nextSpace - i) <= stickOffsetX - blockWidth * 9 && y == stickOffsetY + 12) 
-				{
-					while (x >= stickOffsetX - blockWidth * 10)
-					{
-						Transform empty = Instantiate(emptyBlockPrefab).transform;
-						empty.SetParent(stick);
-						empty.localPosition = new Vector2(x,y);
-						x -= blockWidth;
-					}
-					y = -2;
-					x = 60;
-				}
-
-				//Move it to it's new home.
-				t.localPosition = new Vector2(x, y);
-
-				//Add it to the list.
-				underscores.Add (t.GetComponent<Underscore>());
-			}
-			else
-			{
-				//Find Next Word's Length
-				for (int j = i + 1; j < currentPhrase.Length; j++) 
-				{
-					if (currentPhrase [j] == ' ') 
-					{
-						nextSpace = j - 1;
-						break;
-					}
-				}
-				if (nextSpace <= i)
-				{
-					nextSpace = currentPhrase.Length - 1;
-				}
-
-				Transform t = Instantiate(emptyBlockPrefab).transform;
-				t.SetParent(stick);
-				t.localPosition = new Vector2(x, y);
-			}
-		}
-	}
-		*/
 
 	void GenerateBlocks(char c)
 	{

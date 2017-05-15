@@ -58,7 +58,6 @@ public class ClickAndDrag : MonoBehaviour
                 touchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 newGOCenter = touchPosition - offset;
                 selectedBlock.transform.position = new Vector3(newGOCenter.x, newGOCenter.y, GOCenter.z);
-
             }
         }
 
@@ -79,11 +78,6 @@ public class ClickAndDrag : MonoBehaviour
 				}
 
 				dragging = false;
-
-				if (gameManager.placeTutorial == true)
-				{
-					gameManager.placeTutorial = false;
-				}
 			}
         }
     }
