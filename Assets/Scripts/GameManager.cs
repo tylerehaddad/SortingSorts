@@ -308,7 +308,7 @@ public class GameManager : MonoBehaviour {
 			if (currentPhrase[n] == ' ') 
 			{
 				nextSpace = n - 1;
-				Debug.Log ("The next space is at " + nextSpace);
+				//Debug.Log ("The next space is at " + nextSpace);
 				break;
 			}
 		}
@@ -326,7 +326,7 @@ public class GameManager : MonoBehaviour {
 					//Spawn the character we are currently on as a block.
 					GenerateBlocks (currentPhrase [positionPhrase]);
 
-					Debug.Log (currentPhrase [positionPhrase] + " at " + positionPhrase);
+					//Debug.Log (currentPhrase [positionPhrase] + " at " + positionPhrase);
 
 					//Creates the underscore.
 					Transform t = Instantiate (underscorePrefab).transform;
@@ -344,13 +344,13 @@ public class GameManager : MonoBehaviour {
 					//Edit how this works to fix space being on the next line.
 					if(currentPhrase [positionPhrase] == ' ')
 					{
-						Debug.Log ("There is infact a space.");
+						//Debug.Log ("There is infact a space.");
 						for (int j = positionPhrase + 1; j < currentPhrase.Length; j++) 
 						{
 							if (currentPhrase [j] == ' ') 
 							{
 								nextSpace = j - 1;
-								Debug.Log ("The next space is at " + nextSpace);
+								//Debug.Log ("The next space is at " + nextSpace);
 								break;
 							}
 						}
@@ -396,7 +396,7 @@ public class GameManager : MonoBehaviour {
 		width = Mathf.Max (width, 5);
 		do
 		{
-			x = -width* offset + Random.Range (0, width*2) * offset;
+			x = -width * offset + Random.Range (0, width * 2) * offset;
 			same = false;
 
 			for (int i = 0; i < blocks.Count; i++) 
