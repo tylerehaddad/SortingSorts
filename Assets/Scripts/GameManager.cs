@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour {
 	[Header("Phrases:")]
 	public List<string> phrases;
 	public List<string> hints;
+	[Range(0, 3)]
+	public List<int> difficulty;
 
 	[Header("Tutorials:")]
 	public List<GameObject> tutorials;
@@ -174,10 +176,14 @@ public class GameManager : MonoBehaviour {
 		if (printTutorialDrawn == true)
 		{
 			printAlpha = Mathf.Lerp (printAlpha, 1, tutorialArrowLerpSpeed);
-
+			placeTutorial = false;
 		} else
 		{
 			printAlpha = Mathf.Lerp (printAlpha, 0, tutorialArrowLerpSpeed);
+			if (printTutorial == true && grabTutorial == false)
+			{
+				placeTutorial = true;
+			}
 		}
 
 		//Set the alphas.
@@ -290,8 +296,6 @@ public class GameManager : MonoBehaviour {
 		Gizmos.DrawLine (stickOffset - Vector3.left * size, stickOffset + Vector3.left * size);
 	}
 
-	// ------------------ I DON'T UNDERSTAND -----------------------
-
 	//Sort out the phrase.
 	void SortPhrase()
 	{
@@ -313,14 +317,16 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
+		//Loop between every tile.
 		while(position < lineMax * lineAmount)
 		{
+			//Set the x & y of the new tile.
 			x = stick.position.x + stickOffsetX - blockWidth * (position - (Mathf.Floor(position/lineAmount) * lineAmount));
 			y = stick.position.y + stickOffsetY - blockHeight * (Mathf.Floor(position/lineAmount));
 
+			//Lets spawn something in the phrase if we can.
 			if (positionPhrase < currentPhrase.Length)
 			{
-				//PROBLEM AREA----------------------------------------------------------------------------------------------------------------
 				if (currentPhrase [positionPhrase] != ' ' && nextSpace < ((Mathf.Floor(position/lineAmount) + 1) * lineAmount))
 				{
 					//Spawn the character we are currently on as a block.
@@ -334,17 +340,22 @@ public class GameManager : MonoBehaviour {
 					//Parents it.
 					t.SetParent (stick);
 
+					//Move it.
 					t.position = new Vector2 (x, y);
 
+					//Add it.
 					underscores.Add (t.GetComponent<Underscore>());
 
+					//Go forwards.
 					positionPhrase++;
 				} else
 				{
-					//Edit how this works to fix space being on the next line.
+					//If space, look for the next one.
 					if(currentPhrase [positionPhrase] == ' ')
 					{
 						//Debug.Log ("There is infact a space.");
+
+						//Look for the length of the next word.
 						for (int j = positionPhrase + 1; j < currentPhrase.Length; j++) 
 						{
 							if (currentPhrase [j] == ' ') 
@@ -355,14 +366,17 @@ public class GameManager : MonoBehaviour {
 							}
 						}
 
+						//Make sure there is a space of some sort, because if not everything breaks at the end.
 						if (nextSpace <= positionPhrase)
 						{
 							nextSpace = currentPhrase.Length + 1;
 						}
 
+						//Move the phrase forwards.
 						positionPhrase++;
 					}
 
+					//Kill off blocks when new lining, spawn them if not.
 					if (position - (Mathf.Floor (position / lineAmount) * lineAmount) != 0 && currentPhrase [positionPhrase] != ' ')
 					{
 						Transform empty = Instantiate (emptyBlockPrefab).transform;
@@ -370,10 +384,11 @@ public class GameManager : MonoBehaviour {
 						empty.position = new Vector2 (x, y);
 					} else
 					{
+						//Go back to compensate for the lack of an empty block.
 						position--;
 					}
 				}
-			} else
+			} else //Nah fam let's spawn just a bunch of empty shit to fill in the rest.
 			{
 				Transform empty = Instantiate(emptyBlockPrefab).transform;
 				empty.SetParent(stick);
@@ -384,6 +399,8 @@ public class GameManager : MonoBehaviour {
 			position++;
 		}
 	}
+
+	// ------------------ I DON'T UNDERSTAND -----------------------
 
 	void GenerateBlocks(char c)
 	{
@@ -511,6 +528,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 	}
+
 	// ------------------ END OF ME NOT UNDERSTANDING -----------------------
 
 	void Reset()
