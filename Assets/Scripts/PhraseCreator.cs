@@ -6,6 +6,11 @@ using UnityEditor;
 public class PhraseCreator : EditorWindow
 {
 	public GameManager gameManager;
+	public List<int> visible;
+
+	string newPhrase;
+	string newHint;
+	int newDifficulty;
 
 	[MenuItem ("Window/Phrase Creator")]
 	public static void ShowWindow()
@@ -21,11 +26,53 @@ public class PhraseCreator : EditorWindow
 
 			for(int i = 0; i < gameManager.phrases.Count; i++)
 			{
-				GUILayout.Label ("Phrase " + i, EditorStyles.boldLabel);
-				gameManager.hints [i] = EditorGUILayout.TextField ("Phrase: ", gameManager.hints [i]);
-				gameManager.phrases [i] = EditorGUILayout.TextField ("Solution: ", gameManager.phrases [i]);
-				GUILayout.Label ("Difficulty:");
-				gameManager.difficulty [i] = EditorGUILayout.IntSlider (gameManager.difficulty [i], 0, 3);
+				bool isVisible = false;
+				if (visible.Contains (i))
+				{
+					isVisible = true;
+				}
+
+				isVisible = EditorGUILayout.Foldout (isVisible, "Phrase " + i);
+
+				if (!visible.Contains (i) && isVisible)
+				{
+					visible.Add (i);
+				} else if (visible.Contains (i) && !isVisible)
+				{
+					visible.Remove (i);
+				}
+
+				if (visible.Contains (i))
+				{
+					gameManager.hints [i] = EditorGUILayout.TextField ("Phrase: ", gameManager.hints [i]);
+					gameManager.phrases [i] = EditorGUILayout.TextField ("Solution: ", gameManager.phrases [i]).ToUpper();
+					GUILayout.Label ("Difficulty:");
+					gameManager.difficulty [i] = EditorGUILayout.IntSlider (gameManager.difficulty [i], 0, 3);
+					if (GUILayout.Button ("Remove"))
+					{
+						gameManager.hints.Remove (gameManager.hints[i]);
+						gameManager.phrases.Remove (gameManager.phrases[i]);
+						gameManager.difficulty.Remove (gameManager.difficulty[i]);
+					}
+				}
+			}
+
+			GUILayout.Label ("New?", EditorStyles.boldLabel);
+
+			newHint = EditorGUILayout.TextField ("Phrase: ", newHint);
+			newPhrase = EditorGUILayout.TextField ("Solution: ", newPhrase);
+			GUILayout.Label ("Difficulty:");
+			newDifficulty = EditorGUILayout.IntSlider (newDifficulty, 0, 3);
+
+			if (GUILayout.Button ("Create"))
+			{
+				gameManager.hints.Add (newHint);
+				gameManager.phrases.Add (newPhrase.ToUpper());
+				gameManager.difficulty.Add (newDifficulty);
+
+				newPhrase = null;
+				newHint = null;
+				newDifficulty = 0;
 			}
 		} else
 		{
