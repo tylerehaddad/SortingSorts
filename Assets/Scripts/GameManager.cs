@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour {
 	public bool placeTutorial = false;
 	public bool printTutorial = true;
 	private bool printTutorialDrawn = false;
+	public int currentDifficulty = 0;
 
 	//Phrase Variables.
 	private string currentPhrase;
@@ -262,6 +263,7 @@ public class GameManager : MonoBehaviour {
 		//Set the Variables.
 		score = 0;
 		roundTimer = roundTimerStart;
+		currentDifficulty = 0;
 	}
 
 	//OH BOI, WHAT PHRASE IS IT GOING TO THROW AT ME?!?
@@ -270,8 +272,8 @@ public class GameManager : MonoBehaviour {
 		//Choose a phrase! Any phrase!
 		int i = Random.Range(0, phrases.Count);
 
-		//If it's the same, pick a new one stupid.
-		while (currentPhrase == phrases[i])
+		//If it's the same or not the right difficulty, pick a new one stupid.
+		while (difficulty [i] != currentDifficulty || currentPhrase == phrases[i])
 		{
 			i = Random.Range(0, phrases.Count);
 		}
@@ -510,6 +512,13 @@ public class GameManager : MonoBehaviour {
 		{
 			score += currentPhraseNoSpaces.Length;
 			scoreText.text = score.ToString ();
+			if (currentDifficulty < 3)
+			{
+				currentDifficulty++;
+			} else
+			{
+				currentDifficulty = 3;
+			}
 			Reset ();
 		} 
 		else 
