@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour {
 	[Header("UI References:")]
 	public Text hintText;
 	public Text scoreText;
+	public Text difficultyText;
 	public Text timerText;
 	public GameObject gameOverMenu;
 	public GameObject menu;
@@ -69,6 +70,8 @@ public class GameManager : MonoBehaviour {
 	public bool printTutorial = true;
 	private bool printTutorialDrawn = false;
 	public int currentDifficulty = 0;
+	public int currentDifficultyGoal = 1;
+	public int currentLevel = 0;
 
 	//Phrase Variables.
 	private string currentPhrase;
@@ -264,6 +267,9 @@ public class GameManager : MonoBehaviour {
 		score = 0;
 		roundTimer = roundTimerStart;
 		currentDifficulty = 0;
+		currentDifficultyGoal = 1;
+		currentLevel = 0;
+		difficultyText.text = "Level: " + (currentDifficulty + 1).ToString ();
 	}
 
 	//OH BOI, WHAT PHRASE IS IT GOING TO THROW AT ME?!?
@@ -273,7 +279,7 @@ public class GameManager : MonoBehaviour {
 		int i = Random.Range(0, phrases.Count);
 
 		//If it's the same or not the right difficulty, pick a new one stupid.
-		while (difficulty [i] != currentDifficulty || currentPhrase == phrases[i])
+		while (difficulty [i] > currentDifficulty || currentPhrase == phrases[i])
 		{
 			i = Random.Range(0, phrases.Count);
 		}
@@ -512,12 +518,27 @@ public class GameManager : MonoBehaviour {
 		{
 			score += currentPhraseNoSpaces.Length;
 			scoreText.text = score.ToString ();
+			currentLevel++;
+
+			if (currentLevel >= currentDifficultyGoal)
+			{
+				if (currentDifficulty < 3)
+				{
+					currentDifficulty++;
+				} else
+				{
+					currentDifficulty = 3;
+				}
+
+				currentDifficultyGoal += 3 * currentDifficulty;
+			}
+
 			if (currentDifficulty < 3)
 			{
-				currentDifficulty++;
+				difficultyText.text = "Level: " + (currentDifficulty + 1).ToString ();
 			} else
 			{
-				currentDifficulty = 3;
+				difficultyText.text = "Level: MAX";
 			}
 			Reset ();
 		} 
