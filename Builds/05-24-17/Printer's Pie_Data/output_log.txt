@@ -1,0 +1,33 @@
+Initialize engine version: 5.6.0f3 (497a0f351392)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 750 (ID=0x1381)
+    Vendor:   NVIDIA
+    VRAM:     994 MB
+    Driver:   22.21.13.8205
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+- Completed reload, in  0.327 seconds
+Platform assembly: D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Yukon\Gamedev\GitHub\SortingSorts\Builds\05-24-17\Printer's Pie_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 3200x1080 at -1280,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 3.476000 ms
+BLOODY BUTCHERY
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Setting up 3 worker threads for Enlighten.
+  Thread -> id: 2ed4 -> priority: 1 
+  Thread -> id: 2e08 -> priority: 1 
+  Thread -> id: 3a34 -> priority: 1 
