@@ -35,7 +35,7 @@ public class PhraseCreator : EditorWindow
 				{
 					isVisible = true;
 				}
-
+					
 				isVisible = EditorGUILayout.Foldout (isVisible, "Phrase " + i);
 
 				if (!visible.Contains (i) && isVisible)
@@ -83,6 +83,11 @@ public class PhraseCreator : EditorWindow
 			gameManager = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameManager>();
 			GUILayout.Label ("I can't access a Game Manager. Try opening a different scene?");
 		}
+	}
+
+	public void OnInspectorUpdate()
+	{
+		this.Repaint();
 	}
 	#endif
 }
