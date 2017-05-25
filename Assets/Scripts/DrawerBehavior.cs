@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(RectTransform))]
+[RequireComponent(typeof(AudioSource))]
 public class DrawerBehavior : MonoBehaviour {
 
 	public bool activeAtAwake = true;
@@ -12,9 +13,15 @@ public class DrawerBehavior : MonoBehaviour {
 	[HideInInspector]
 	public bool moving = false;
 
-	public float speed = 0.125f;
+	public float speed = 0.03125f;
+
+	float percentage = 0;
 
 	private RectTransform rectTransform;
+	private AudioSource source;
+
+	public AudioClip closeClip;
+	public AudioClip stopClip;
 
 	void Awake ()
 	{
@@ -24,40 +31,38 @@ public class DrawerBehavior : MonoBehaviour {
 	void Start()
 	{
 		rectTransform = gameObject.GetComponent<RectTransform> ();
+		source = GetComponent<AudioSource>();
 		moving = false;
 	}
 
 	void Update ()
 	{
+		rectTransform.anchoredPosition = new Vector2 (0, Mathf.Lerp (0, Screen.height * 3, percentage));
+
 		if (moving)
 		{
 			if (closed)
 			{
-				rectTransform.anchoredPosition = new Vector2 (0, Mathf.Lerp (rectTransform.anchoredPosition.y, 0, speed));
-
-				if (rectTransform.anchoredPosition.y < 0.1)
+				percentage = Mathf.Max (percentage - speed, 0);
+				if (percentage == 0)
 				{
 					closed = false;
 					moving = false;
+
+					source.clip = stopClip;
+					source.Play();
 				}
 			} else
 			{
-				rectTransform.anchoredPosition = new Vector2 (0, Mathf.Lerp (rectTransform.anchoredPosition.y, Screen.height * 3, speed));
-
-				if (rectTransform.anchoredPosition.y > 0.9 * (Screen.height * 3))
+				percentage = Mathf.Min (percentage + speed, 1);
+				if (percentage == 1)
 				{
 					closed = true;
 					moving = false;
+
+					source.clip = stopClip;
+					source.Play();
 				}
-			}
-		} else
-		{
-			if (closed)
-			{
-				rectTransform.anchoredPosition = new Vector2 (0, Screen.height * 3);
-			} else
-			{
-				rectTransform.anchoredPosition = new Vector2 (0, 0);
 			}
 		}
 	}
@@ -77,6 +82,9 @@ public class DrawerBehavior : MonoBehaviour {
 		{
 			moving = true;
 		}
+
+		source.clip = closeClip;
+		source.Play();
 	}
 
 	public void Close()
@@ -85,6 +93,9 @@ public class DrawerBehavior : MonoBehaviour {
 		{
 			closed = false;
 		}
+
+		source.clip = closeClip;
+		source.Play();
 
 		moving = true;
 	}
@@ -95,6 +106,9 @@ public class DrawerBehavior : MonoBehaviour {
 		{
 			closed = true;
 		}
+
+		source.clip = closeClip;
+		source.Play();
 
 		moving = true;
 	}

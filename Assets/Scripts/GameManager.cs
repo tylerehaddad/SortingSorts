@@ -22,16 +22,11 @@ public class GameManager : MonoBehaviour {
 	[Range(0, 3)]
 	public List<int> difficulty;
 
-	[Header("Tutorials:")]
-	public List<GameObject> tutorials;
-	public GameObject tutorialMenu;
-
 	[Header("UI References:")]
 	public Text hintText;
 	public Text scoreText;
 	public Text difficultyText;
 	public Text timerText;
-	public GameObject menu;
 	public Text finalScore;
 
 	[Header("Drawers:")]
@@ -98,9 +93,6 @@ public class GameManager : MonoBehaviour {
 	private float blockWidth;
 	private float blockHeight = 11;
 
-	//Tutorial Variables.
-	private int currentTutorial;
-
 	//Tutorial UI Images.
 	private Image grabImage;
 	private Image placeImage;
@@ -119,8 +111,6 @@ public class GameManager : MonoBehaviour {
 		score = 0;
 		roundTimer = roundTimerStart;
 		currentPhrase = "";
-
-		currentTutorial = 0;
 
 		//Init Lists.
 		underscores = new List<Underscore> ();
@@ -238,22 +228,6 @@ public class GameManager : MonoBehaviour {
 		printTextColor.a = printAlpha;
 		printText.color = printTextColor;
 
-		//This activates the current tutorial gameobject on the tutorial menu.
-		if (tutorialMenu.activeSelf == true)
-		{
-			tutorials[currentTutorial].SetActive(true);
-			for(int i = 0; i < tutorials.Count; i++)
-			{
-				if(tutorials[i].activeSelf == true)
-				{
-					if (i != currentTutorial)
-					{
-						tutorials[i].SetActive(false);
-					}
-				}
-			}
-		}
-
 		//Bail! Abandon ship!
 		if (Input.GetKeyDown ("escape"))
 		{
@@ -361,8 +335,6 @@ public class GameManager : MonoBehaviour {
 					//Spawn the character we are currently on as a block.
 					GenerateBlocks (currentPhrase [positionPhrase]);
 
-					//Debug.Log (currentPhrase [positionPhrase] + " at " + positionPhrase);
-
 					//Creates the underscore.
 					Transform t = Instantiate (underscorePrefab).transform;
 
@@ -382,15 +354,12 @@ public class GameManager : MonoBehaviour {
 					//If space, look for the next one.
 					if(currentPhrase [positionPhrase] == ' ')
 					{
-						//Debug.Log ("There is infact a space.");
-
 						//Look for the length of the next word.
 						for (int j = positionPhrase + 1; j < currentPhrase.Length; j++) 
 						{
 							if (currentPhrase [j] == ' ') 
 							{
 								nextSpace = j - 1;
-								//Debug.Log ("The next space is at " + nextSpace);
 								break;
 							}
 						}
@@ -621,28 +590,6 @@ public class GameManager : MonoBehaviour {
 
 		//Give the player a boost in time.
 		roundTimer += 60f;
-	}
-
-	//Change the current tutorial.
-	public void TutorialChange(bool postive)
-	{
-		//Advance in the tutorial.
-		if (postive)
-		{
-			currentTutorial++;
-		} else
-		{
-			currentTutorial--;
-		}
-
-		//Loop the tutorial.
-		if (currentTutorial < 0)
-		{
-			currentTutorial = tutorials.Count - 1;
-		} else if(currentTutorial > tutorials.Count - 1)
-		{
-			currentTutorial = 0;
-		}
 	}
 
 	//Restart the game.
