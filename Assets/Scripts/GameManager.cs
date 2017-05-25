@@ -31,9 +31,13 @@ public class GameManager : MonoBehaviour {
 	public Text scoreText;
 	public Text difficultyText;
 	public Text timerText;
-	public GameObject gameOverMenu;
 	public GameObject menu;
 	public Text finalScore;
+
+	[Header("Drawers:")]
+	public DrawerBehavior sponsorDrawer;
+	public DrawerBehavior menuDrawer;
+	public DrawerBehavior overDrawer;
 
 	[Header("UI Labels:")]
 	public string hintTextLabel;
@@ -128,6 +132,8 @@ public class GameManager : MonoBehaviour {
 		source = GetComponent<AudioSource>();
 
 		printTutorial = true;
+
+		Invoke ("CloseSponsor", 2f);
 	}
 
 	void Update ()
@@ -146,7 +152,7 @@ public class GameManager : MonoBehaviour {
 			if (roundTimer < 0)
 			{
 				playing = false;
-				gameOverMenu.SetActive (true);
+				overDrawer.Open();
 				finalScore.text = score.ToString ();
 				source.clip = endClip;
 				source.Play();
@@ -251,7 +257,7 @@ public class GameManager : MonoBehaviour {
 		//Bail! Abandon ship!
 		if (Input.GetKeyDown ("escape"))
 		{
-			if (menu.activeSelf == true)
+			if (menuDrawer.closed == false)
 			{
 				//*rage quits*
 				QuitApp ();
@@ -261,7 +267,7 @@ public class GameManager : MonoBehaviour {
 				playing = false;
 
 				//Make the menu exist again.
-				menu.SetActive (true);
+				menuDrawer.Open();
 			}
 		}
 	}
@@ -269,19 +275,22 @@ public class GameManager : MonoBehaviour {
 	//Yo! Start up the game!
 	public void Play()
 	{
-		//Is the player playing? Hell yea they are.
-		playing = true;
+		//if (menuDrawer.moving == false)
+		//{
+			//Is the player playing? Hell yea they are.
+			playing = true;
 
-		//Nuke the playing field.
-		Reset ();
+			//Nuke the playing field.
+			Reset ();
 
-		//Set the Variables.
-		score = 0;
-		roundTimer = roundTimerStart;
-		currentDifficulty = 0;
-		currentDifficultyGoal = 1;
-		currentLevel = 0;
-		difficultyText.text = "Level: " + (currentDifficulty + 1).ToString ();
+			//Set the Variables.
+			score = 0;
+			roundTimer = roundTimerStart;
+			currentDifficulty = 0;
+			currentDifficultyGoal = 1;
+			currentLevel = 0;
+			difficultyText.text = "Level: " + (currentDifficulty + 1).ToString ();
+		//}
 	}
 
 	//OH BOI, WHAT PHRASE IS IT GOING TO THROW AT ME?!?
@@ -652,5 +661,10 @@ public class GameManager : MonoBehaviour {
 	{
 		source.clip = clickClip;
 		source.Play();
+	}
+
+	public void CloseSponsor()
+	{
+		sponsorDrawer.Move ();
 	}
 }
