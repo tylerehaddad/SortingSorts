@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(AudioSource))]
 public class GameManager : MonoBehaviour {
 
 	/// <summary>
@@ -63,6 +64,11 @@ public class GameManager : MonoBehaviour {
 	[Header("Balanceable Variables:")]
 	public float roundTimerStart = 120f;
 
+	[Header("Sound Effects:")]
+	public AudioClip clickClip;
+	public AudioClip printClip;
+	public AudioClip endClip;
+
 	[HideInInspector]
 	public bool playing;
 	public bool grabTutorial = true;
@@ -101,6 +107,8 @@ public class GameManager : MonoBehaviour {
 	private float placeAlpha = 0f;
 	private float printAlpha = 0f;
 
+	private AudioSource source;
+
 	void Start ()
 	{
 		//Init Variables.
@@ -116,6 +124,8 @@ public class GameManager : MonoBehaviour {
 
 		//I'M NOT FAT, I'M JUST BIG BONED.
 		blockWidth = blockPrefab.GetComponentInChildren<SpriteRenderer> ().bounds.size.x;
+
+		source = GetComponent<AudioSource>();
 
 		printTutorial = true;
 	}
@@ -138,6 +148,8 @@ public class GameManager : MonoBehaviour {
 				playing = false;
 				gameOverMenu.SetActive (true);
 				finalScore.text = score.ToString ();
+				source.clip = endClip;
+				source.Play();
 			}
 		} else
 		{
@@ -518,6 +530,10 @@ public class GameManager : MonoBehaviour {
 		{
 			score += currentPhraseNoSpaces.Length;
 			scoreText.text = score.ToString ();
+
+			source.clip = printClip;
+			source.Play();
+
 			currentLevel++;
 
 			if (currentLevel >= currentDifficultyGoal)
@@ -541,6 +557,11 @@ public class GameManager : MonoBehaviour {
 				difficultyText.text = "Level: MAX";
 			}
 			Reset ();
+
+			grabTutorial = false;
+			placeTutorial = false;
+			printTutorial = false;
+			printTutorialDrawn = false;
 		} 
 		else 
 		{
@@ -625,5 +646,11 @@ public class GameManager : MonoBehaviour {
 	public void QuitApp()
 	{
 		Application.Quit();
+	}
+
+	public void Click()
+	{
+		source.clip = clickClip;
+		source.Play();
 	}
 }

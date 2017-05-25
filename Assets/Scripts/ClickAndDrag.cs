@@ -10,6 +10,9 @@ public class ClickAndDrag : MonoBehaviour
     public Vector3 offset;
     public Vector3 newGOCenter;
 	public GameManager gameManager;
+	private AudioSource source;
+
+	public AudioClip dropClip;
 
 	public LayerMask blocks, underscores;
 
@@ -17,6 +20,11 @@ public class ClickAndDrag : MonoBehaviour
 
     public bool dragging = false;
 	private float clickTimer = 0;
+
+	void Start()
+	{
+		source = GetComponent<AudioSource>();
+	}
 
     void Update()
     {
@@ -76,6 +84,9 @@ public class ClickAndDrag : MonoBehaviour
 						selectedBlock.transform.SetParent (hit.collider.transform);
 					}
 				}
+
+				source.clip = dropClip;
+				source.Play();
 
 				dragging = false;
 			}
