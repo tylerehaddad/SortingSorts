@@ -4,25 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
-public class GameManager : MonoBehaviour {
-
-	/// <summary>
-	/// List phrases contains the list of all phrases
-	/// to be used in the game. List is public
-	/// so that the list can be easily edited
-	/// in the Unity editor at any time.
-	/// The string currentPhrase is used to 
-	/// store the selected phrase for use
-	/// in generating spaces and letter blocks.
-	/// </summary>
-
+public class GameManager : MonoBehaviour
+{
 	[Header("Phrases:")]
 	public List<string> phrases;
 	public List<string> hints;
 	[Range(0, 3)]
 	public List<int> difficulty;
 
-	[Header("UI References:")]
+	[Header("Game UI:")]
 	public Text hintText;
 	public Text scoreText;
 	public Text difficultyText;
@@ -70,12 +60,20 @@ public class GameManager : MonoBehaviour {
 
 	[HideInInspector]
 	public bool playing;
+
+	[HideInInspector]
 	public bool grabTutorial = true;
+	[HideInInspector]
 	public bool placeTutorial = false;
+	[HideInInspector]
 	public bool printTutorial = true;
 	private bool printTutorialDrawn = false;
+
+	[HideInInspector]
 	public int currentDifficulty = 0;
+	[HideInInspector]
 	public int currentDifficultyGoal = 1;
+	[HideInInspector]
 	public int currentLevel = 0;
 
 	//Phrase Variables.
@@ -405,7 +403,7 @@ public class GameManager : MonoBehaviour {
 		bool same;
 		float x;
 		float y = -15;
-		float offset = blockWidth - 1.5f;
+		float offset = blockWidth;
 		int tries = 0;
 		int width = Mathf.Min(currentPhrase.Length /3, 7);
 		width = Mathf.Max (width, 5);
