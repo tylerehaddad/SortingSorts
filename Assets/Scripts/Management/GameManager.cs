@@ -149,12 +149,12 @@ public class GameManager : MonoBehaviour
 	{
 		if (playing)
 		{
-			//Display the Timer.
-			timerText.text = Mathf.Floor (roundTimer / 60).ToString ("00") + ":" + Mathf.Floor (roundTimer % 60).ToString ("00");
-
-			//Oh no! The time is going down!
 			if (!paused)
 			{
+				//Display the Timer.
+				timerText.text = Mathf.Floor (roundTimer / 60).ToString ("00") + ":" + Mathf.Floor (roundTimer % 60).ToString ("00");
+
+				//Oh no! The time is going down!
 				roundTimer -= Time.deltaTime;
 			}
 
@@ -322,7 +322,7 @@ public class GameManager : MonoBehaviour
 			currentDifficulty = 0;
 			currentDifficultyGoal = 1;
 			currentLevel = 0;
-			difficultyText.text = "Level: " + (currentDifficulty + 1).ToString ();
+			difficultyText.text = "Level " + (currentDifficulty + 1).ToString ();
 		//}
 	}
 
@@ -680,10 +680,10 @@ public class GameManager : MonoBehaviour
 
 		if (currentDifficulty < 3)
 		{
-			difficultyText.text = "Level: " + (currentDifficulty + 1).ToString ();
+			difficultyText.text = "Level " + (currentDifficulty + 1).ToString ();
 		} else
 		{
-			difficultyText.text = "Level: MAX";
+			difficultyText.text = "Level MAX";
 		}
 
 		//New phrase.
