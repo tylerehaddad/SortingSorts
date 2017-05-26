@@ -14,9 +14,21 @@ public class GameManager : MonoBehaviour
 
 	[Header("Game UI:")]
 	public Text hintText;
+
 	public Text scoreText;
+	public GameObject scoreUI;
+	public Text scoreAdditionText;
+	public GameObject scoreAdditionUI;
+
 	public Text difficultyText;
+	public GameObject difficultyUI;
+	public GameObject difficultyAdditionUI;
+
 	public Text timerText;
+	public GameObject timerUI;
+	public Text timerAdditionText;
+	public GameObject timerAdditionUI;
+
 	public Text finalScore;
 
 	[Header("Drawers:")]
@@ -50,6 +62,9 @@ public class GameManager : MonoBehaviour
 	public float lineMax = 3;
 	public float lineAmount = 10;
 
+	[Header("Drawer:")]
+	public Transform drawer;
+
 	[Header("Balanceable Variables:")]
 	public float roundTimerStart = 120f;
 
@@ -68,6 +83,8 @@ public class GameManager : MonoBehaviour
 	[HideInInspector]
 	public bool printTutorial = true;
 	private bool printTutorialDrawn = false;
+	[HideInInspector]
+	private bool tutorial = false;
 
 	[HideInInspector]
 	public int currentDifficulty = 0;
@@ -76,12 +93,16 @@ public class GameManager : MonoBehaviour
 	[HideInInspector]
 	public int currentLevel = 0;
 
+	private bool difficultyUp = false;
+
 	//Phrase Variables.
 	private string currentPhrase;
 
 	//Gameplay Variables.
 	private float roundTimer;
 	private int score;
+	[HideInInspector]
+	public bool paused = false;
 
 	//Game Objects.
 	private List<Underscore> underscores;
@@ -97,7 +118,7 @@ public class GameManager : MonoBehaviour
 	private Image printImage;
 
 	//Tutorial UI Alphas.
-	private float grabAlpha = 1f;
+	private float grabAlpha = 0f;
 	private float placeAlpha = 0f;
 	private float printAlpha = 0f;
 
@@ -131,8 +152,11 @@ public class GameManager : MonoBehaviour
 			//Display the Timer.
 			timerText.text = Mathf.Floor (roundTimer / 60).ToString ("00") + ":" + Mathf.Floor (roundTimer % 60).ToString ("00");
 
-			//Oh no! The time is going down! 
-			roundTimer -= Time.deltaTime;
+			//Oh no! The time is going down!
+			if (!paused)
+			{
+				roundTimer -= Time.deltaTime;
+			}
 
 			printTutorialDrawn = true;
 
@@ -141,6 +165,14 @@ public class GameManager : MonoBehaviour
 			{
 				playing = false;
 				overDrawer.Open();
+				drawer.GetComponent<GameDrawerBehavior> ().Close ();
+				stick.GetComponent<GameDrawerBehavior> ().Open ();
+
+				scoreUI.GetComponent<UIBehavior> ().Hide();
+				difficultyUI.GetComponent<UIBehavior> ().Hide();
+				timerUI.GetComponent<UIBehavior> ().Hide();
+
+				hintText.text = "";
 				finalScore.text = score.ToString ();
 				source.clip = endClip;
 				source.Play();
@@ -150,60 +182,76 @@ public class GameManager : MonoBehaviour
 			printTutorialDrawn = false;
 		}
 
-		//Arrow Alphas.
-		if (grabTutorial == true)
+		if (tutorial)
 		{
-			grabAlpha = Mathf.Lerp (grabAlpha, 1, tutorialArrowLerpSpeed);
-		} else
-		{
-			grabAlpha = Mathf.Lerp (grabAlpha, 0, tutorialArrowLerpSpeed);
-		}
-
-		if (placeTutorial == true)
-		{
-			placeAlpha = Mathf.Lerp (placeAlpha, 1, tutorialArrowLerpSpeed);
-		} else
-		{
-			placeAlpha = Mathf.Lerp (placeAlpha, 0, tutorialArrowLerpSpeed);
-		}
-
-
-
-		if (printTutorial == true)
-		{
-			for (int i = 0; i < underscores.Count; i++)
+			//Arrow Alphas.
+			if (grabTutorial == true)
 			{
-				if (underscores [i].transform.childCount <= 1)
-				{
-					printTutorialDrawn = false;
-				}
+				grabAlpha = Mathf.Lerp (grabAlpha, 1, tutorialArrowLerpSpeed);
+			} else
+			{
+				grabAlpha = Mathf.Lerp (grabAlpha, 0, tutorialArrowLerpSpeed);
 			}
-		} else
-		{
-			printTutorialDrawn = false;
-		}
 
-		if (printTutorialDrawn == true)
-		{
-			printAlpha = Mathf.Lerp (printAlpha, 1, tutorialArrowLerpSpeed);
-			placeTutorial = false;
-		} else
-		{
-			printAlpha = Mathf.Lerp (printAlpha, 0, tutorialArrowLerpSpeed);
-			if (printTutorial == true && grabTutorial == false)
+			if (placeTutorial == true)
 			{
-				placeTutorial = true;
+				placeAlpha = Mathf.Lerp (placeAlpha, 1, tutorialArrowLerpSpeed);
+			} else
+			{
+				placeAlpha = Mathf.Lerp (placeAlpha, 0, tutorialArrowLerpSpeed);
+			}
+
+
+
+			if (printTutorial == true)
+			{
+				for (int i = 0; i < underscores.Count; i++)
+				{
+					if (underscores [i].transform.childCount <= 1)
+					{
+						printTutorialDrawn = false;
+					}
+				}
+			} else
+			{
+				printTutorialDrawn = false;
+			}
+
+			if (printTutorialDrawn == true)
+			{
+				printAlpha = Mathf.Lerp (printAlpha, 1, tutorialArrowLerpSpeed);
+				placeTutorial = false;
+			} else
+			{
+				printAlpha = Mathf.Lerp (printAlpha, 0, tutorialArrowLerpSpeed);
+				if (printTutorial == true && grabTutorial == false)
+				{
+					placeTutorial = true;
+				}
 			}
 		}
 
 		//Set the alphas.
 		grabImage = grabArrow.GetComponent<Image>();
 		Color grabArrowColor = grabImage.color;
-		grabArrowColor.a = grabAlpha;
+		if (tutorial)
+		{
+			grabArrowColor.a = grabAlpha;
+		} else
+		{
+			grabArrowColor.a = 0;
+		}
 		grabImage.color = grabArrowColor;
 
 		Color grabTextColor = grabText.color;
-		grabTextColor.a = grabAlpha;
+
+		if (tutorial)
+		{
+			grabTextColor.a = grabAlpha;
+		} else
+		{
+			grabTextColor.a = 0;
+		}
 		grabText.color = grabTextColor;
 
 
@@ -229,17 +277,30 @@ public class GameManager : MonoBehaviour
 		//Bail! Abandon ship!
 		if (Input.GetKeyDown ("escape"))
 		{
-			if (menuDrawer.closed == false)
+			if (paused == false)
 			{
-				//*rage quits*
-				QuitApp ();
-			} else
-			{
-				//The player has given up.
-				playing = false;
+				if (menuDrawer.closed == false)
+				{
+					//*rage quits*
+					QuitApp ();
+				} else
+				{
+					//The player has given up.
+					playing = false;
 
-				//Make the menu exist again.
-				menuDrawer.Open();
+					drawer.GetComponent<GameDrawerBehavior> ().Close ();
+					stick.GetComponent<GameDrawerBehavior> ().Open ();
+
+					scoreUI.GetComponent<UIBehavior> ().Hide ();
+					difficultyUI.GetComponent<UIBehavior> ().Hide ();
+					timerUI.GetComponent<UIBehavior> ().Hide ();
+					HideAdditions ();
+					hintText.text = "";
+
+
+					//Make the menu exist again.
+					menuDrawer.Open ();
+				}
 			}
 		}
 	}
@@ -253,7 +314,7 @@ public class GameManager : MonoBehaviour
 			playing = true;
 
 			//Nuke the playing field.
-			Reset ();
+			Invoke("Reset", 0.75f);
 
 			//Set the Variables.
 			score = 0;
@@ -394,6 +455,29 @@ public class GameManager : MonoBehaviour
 			//Next position.
 			position++;
 		}
+
+		scoreText.text = score.ToString ();
+
+		drawer.GetComponent<GameDrawerBehavior> ().Open ();
+		stick.GetComponent<GameDrawerBehavior> ().Close ();
+
+		scoreUI.GetComponent<UIBehavior> ().Show();
+		difficultyUI.GetComponent<UIBehavior> ().Show();
+		timerUI.GetComponent<UIBehavior> ().Show();
+
+		if(score > 0)
+		{
+			scoreAdditionUI.GetComponent<UIBehavior> ().Show();
+			timerAdditionUI.GetComponent<UIBehavior> ().Show();
+			Invoke ("HideAdditions", 3f);
+
+			if (difficultyUp)
+			{
+				difficultyAdditionUI.GetComponent<UIBehavior> ().Show();
+				difficultyUp = false;
+			}
+		}
+		paused = false;
 	}
 
 	// ------------------ I DON'T UNDERSTAND -----------------------
@@ -402,8 +486,9 @@ public class GameManager : MonoBehaviour
 	{
 		bool same;
 		float x;
-		float y = -15;
 		float offset = blockWidth;
+		float offset_y = -12;
+		float y = offset_y;
 		int tries = 0;
 		int width = Mathf.Min(currentPhrase.Length /3, 7);
 		width = Mathf.Max (width, 5);
@@ -414,33 +499,33 @@ public class GameManager : MonoBehaviour
 
 			for (int i = 0; i < blocks.Count; i++) 
 			{
-				if (x == blocks[i].localPosition.x && y == blocks[i].localPosition.y) 
+				if (x == blocks[i].GetComponent<Letter> ().startPos.x && y == blocks[i].GetComponent<Letter> ().startPos.y) 
 				{
 					same = true;
-					y = -15;
+					y = offset_y;
 				}
 			}
 			if(same || x > width * offset + offset || x < -width * offset - offset)
 			{
-				if(y < -15)
+				if(y < offset_y)
 				{
 					same = true;
-					y = -15;
+					y = offset_y;
 					continue;
 				}
 				else
 				{
-					y = -30;
+					y = offset_y - offset;
 					x = -width * offset + Random.Range(0, width * 2) * offset;
 				}
 			}
 			same = false;
 			for (int i = 0; i < blocks.Count; i++) 
 			{
-				if (x == blocks[i].localPosition.x && y == blocks[i].localPosition.y) 
+				if (x == blocks[i].GetComponent<Letter> ().startPos.x && y == blocks[i].GetComponent<Letter> ().startPos.y) 
 				{
 					same = true;
-					y = -15;
+					y = offset_y;
 				}
 			}
 
@@ -451,10 +536,12 @@ public class GameManager : MonoBehaviour
 				same = false;
 			}
 		} while(same == true);
-
-
+			
 		Letter l = Instantiate (blockPrefab).GetComponent<Letter> ();
-		l.transform.localPosition = new Vector2 (x, y);
+		l.transform.SetParent (drawer);
+		l.transform.position = new Vector2 (x, y + drawer.position.y);
+		l.startPos.x = x;
+		l.startPos.y = y;
 		l.letter = c;
 		l.AssignLetter();
 		blocks.Add (l.transform);
@@ -505,7 +592,11 @@ public class GameManager : MonoBehaviour
 		if (submitted == currentPhraseNoSpaces) 
 		{
 			score += currentPhraseNoSpaces.Length;
-			scoreText.text = score.ToString ();
+			scoreAdditionText.text = "+" + currentPhraseNoSpaces.Length.ToString();
+
+			//Give the player a boost in time.
+			roundTimer += 30f;
+			timerAdditionText.text = "+" + (Mathf.Floor (30f / 60).ToString ("00") + ":" + Mathf.Floor (30f % 60).ToString ("00")).ToString();
 
 			source.clip = printClip;
 			source.Play();
@@ -517,6 +608,7 @@ public class GameManager : MonoBehaviour
 				if (currentDifficulty < 3)
 				{
 					currentDifficulty++;
+					difficultyUp = true;
 				} else
 				{
 					currentDifficulty = 3;
@@ -524,15 +616,18 @@ public class GameManager : MonoBehaviour
 
 				currentDifficultyGoal += 3 * currentDifficulty;
 			}
+				
+			drawer.GetComponent<GameDrawerBehavior> ().Close ();
+			stick.GetComponent<GameDrawerBehavior> ().Open ();
 
-			if (currentDifficulty < 3)
-			{
-				difficultyText.text = "Level: " + (currentDifficulty + 1).ToString ();
-			} else
-			{
-				difficultyText.text = "Level: MAX";
-			}
-			Reset ();
+			scoreUI.GetComponent<UIBehavior> ().Hide();
+			difficultyUI.GetComponent<UIBehavior> ().Hide();
+			timerUI.GetComponent<UIBehavior> ().Hide();
+			paused = true;
+
+			hintText.text = "Success! Printing...";
+
+			Invoke ("Reset", 2f);
 
 			grabTutorial = false;
 			placeTutorial = false;
@@ -543,9 +638,9 @@ public class GameManager : MonoBehaviour
 		{
 			for (int i = 0; i < blocks.Count; i++) 
 			{
-				blocks [i].transform.SetParent (null);
+				blocks [i].transform.SetParent (drawer);
 
-				blocks[i].position = blocks[i].GetComponent<Letter>().startPos;
+				blocks[i].transform.position = new Vector2 (blocks[i].GetComponent<Letter>().startPos.x, blocks[i].GetComponent<Letter>().startPos.y + drawer.position.y);
 			}
 			for (int i = 0; i < underscores.Count; i++) 
 			{
@@ -560,6 +655,7 @@ public class GameManager : MonoBehaviour
 
 	void Reset()
 	{
+		tutorial = true;
 		//Destroy all the blocks.
 		for (int i = 0; i < blocks.Count; i++) 
 		{
@@ -582,12 +678,17 @@ public class GameManager : MonoBehaviour
 		underscores = new List<Underscore> ();
 		blocks = new List<Transform> ();
 
+		if (currentDifficulty < 3)
+		{
+			difficultyText.text = "Level: " + (currentDifficulty + 1).ToString ();
+		} else
+		{
+			difficultyText.text = "Level: MAX";
+		}
+
 		//New phrase.
 		ChoosePhrase();
 		SortPhrase();
-
-		//Give the player a boost in time.
-		roundTimer += 60f;
 	}
 
 	//Restart the game.
@@ -611,5 +712,12 @@ public class GameManager : MonoBehaviour
 	public void CloseSponsor()
 	{
 		sponsorDrawer.Move ();
+	}
+
+	public void HideAdditions()
+	{
+		scoreAdditionUI.GetComponent<UIBehavior> ().Hide();
+		difficultyAdditionUI.GetComponent<UIBehavior> ().Hide();
+		timerAdditionUI.GetComponent<UIBehavior> ().Hide();
 	}
 }

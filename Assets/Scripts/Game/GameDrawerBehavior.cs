@@ -11,7 +11,7 @@ public class GameDrawerBehavior : MonoBehaviour
 	public float openedPosition;
 
 	private Vector3 startPosition;
-	[HideInInspector]
+	//[HideInInspector]
 	public bool moving = false;
 
 	public float speed = 0.03125f;
@@ -49,8 +49,11 @@ public class GameDrawerBehavior : MonoBehaviour
 					closed = false;
 					moving = false;
 
-					source.clip = stopClip;
-					source.Play();
+					if (stopClip != null)
+					{
+						source.clip = stopClip;
+						source.Play ();
+					}
 				}
 			} else
 			{
@@ -60,8 +63,11 @@ public class GameDrawerBehavior : MonoBehaviour
 					closed = true;
 					moving = false;
 
-					source.clip = stopClip;
-					source.Play();
+					if (stopClip != null)
+					{
+						source.clip = stopClip;
+						source.Play ();
+					}
 				}
 			}
 		}
@@ -83,8 +89,11 @@ public class GameDrawerBehavior : MonoBehaviour
 			moving = true;
 		}
 
-		source.clip = closeClip;
-		source.Play();
+		if (closeClip != null)
+		{
+			source.clip = closeClip;
+			source.Play ();
+		}
 	}
 
 	public void Close()
@@ -94,8 +103,11 @@ public class GameDrawerBehavior : MonoBehaviour
 			closed = false;
 		}
 
-		source.clip = closeClip;
-		source.Play();
+		if (closeClip != null)
+		{
+			source.clip = closeClip;
+			source.Play ();
+		}
 
 		moving = true;
 	}
@@ -107,8 +119,11 @@ public class GameDrawerBehavior : MonoBehaviour
 			closed = true;
 		}
 
-		source.clip = closeClip;
-		source.Play();
+		if (closeClip != null)
+		{
+			source.clip = closeClip;
+			source.Play ();
+		}
 
 		moving = true;
 	}

@@ -31,7 +31,7 @@ public class Letter : MonoBehaviour
 
     public void AssignLetter()
     {
-		startPos = transform.position;
+		//startPos = transform.position;
         for (int i = 0; i < 26; i++)
         {
             if (letter == alphabet[i])
