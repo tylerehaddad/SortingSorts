@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 	[Header("Phrases:")]
 	public List<string> phrases;
 	public List<string> hints;
+	public List<string> clues;
 	[Range(0, 3)]
 	public List<int> difficulty;
 
@@ -28,6 +29,15 @@ public class GameManager : MonoBehaviour
 	public GameObject timerUI;
 	public Text timerAdditionText;
 	public GameObject timerAdditionUI;
+
+	public Text clueText;
+	public GameObject clueUI;
+	public Text clueUnlockText;
+	bool clueUnlocked = false;
+	public string clueUnlockDefault;
+	float clueUnlockTime = 0;
+	public GameObject clueUnlockedUI;
+	public GameObject clueLockedUI;
 
 	public Text finalScore;
 
@@ -158,6 +168,26 @@ public class GameManager : MonoBehaviour
 				roundTimer -= Time.deltaTime;
 			}
 
+			if (clueUnlocked)
+			{
+				if (clueUI.GetComponent<UIBehavior> ().hidden)
+				{
+					clueUI.GetComponent<UIBehavior> ().Show ();
+
+					clueUnlockedUI.SetActive(true);
+					clueLockedUI.SetActive(false);
+				}
+			} else
+			{
+				clueUnlockText.text = clueUnlockDefault + (Mathf.Floor (clueUnlockTime / 60).ToString ("00") + ":" + Mathf.Floor (clueUnlockTime % 60).ToString ("00")) + "?"; 
+
+				if (clueUI.GetComponent<UIBehavior> ().hidden)
+				{
+					clueUnlockedUI.SetActive (false);
+					clueLockedUI.SetActive (true);
+				}
+			}
+
 			printTutorialDrawn = true;
 
 			//Game Over! You suck!
@@ -171,6 +201,7 @@ public class GameManager : MonoBehaviour
 				scoreUI.GetComponent<UIBehavior> ().Hide();
 				difficultyUI.GetComponent<UIBehavior> ().Hide();
 				timerUI.GetComponent<UIBehavior> ().Hide();
+				clueUI.GetComponent<UIBehavior> ().Hide();
 
 				hintText.text = "";
 				finalScore.text = score.ToString ();
@@ -294,6 +325,7 @@ public class GameManager : MonoBehaviour
 					scoreUI.GetComponent<UIBehavior> ().Hide ();
 					difficultyUI.GetComponent<UIBehavior> ().Hide ();
 					timerUI.GetComponent<UIBehavior> ().Hide ();
+					clueUI.GetComponent<UIBehavior> ().Hide();
 					HideAdditions ();
 					hintText.text = "";
 
@@ -323,6 +355,7 @@ public class GameManager : MonoBehaviour
 			currentDifficultyGoal = 1;
 			currentLevel = 0;
 			difficultyText.text = "Level " + (currentDifficulty + 1).ToString ();
+			clueUnlocked = false;
 		//}
 	}
 
@@ -343,6 +376,8 @@ public class GameManager : MonoBehaviour
 
 		//Display the Hint Text.
 		hintText.text = hintTextLabel + hints[i];
+
+		clueText.text = clues [i];
 
 		//Debug this!
 		Debug.Log(currentPhrase);
@@ -461,9 +496,12 @@ public class GameManager : MonoBehaviour
 		drawer.GetComponent<GameDrawerBehavior> ().Open ();
 		stick.GetComponent<GameDrawerBehavior> ().Close ();
 
+		clueUnlockTime = (currentDifficulty + 1) * 10;
+
 		scoreUI.GetComponent<UIBehavior> ().Show();
 		difficultyUI.GetComponent<UIBehavior> ().Show();
 		timerUI.GetComponent<UIBehavior> ().Show();
+		clueUI.GetComponent<UIBehavior> ().Show();
 
 		if(score > 0)
 		{
@@ -623,6 +661,9 @@ public class GameManager : MonoBehaviour
 			scoreUI.GetComponent<UIBehavior> ().Hide();
 			difficultyUI.GetComponent<UIBehavior> ().Hide();
 			timerUI.GetComponent<UIBehavior> ().Hide();
+
+			clueUnlocked = false;
+			clueUI.GetComponent<UIBehavior> ().Hide();
 			paused = true;
 
 			hintText.text = "Success! Printing...";
@@ -686,6 +727,8 @@ public class GameManager : MonoBehaviour
 			difficultyText.text = "Level MAX";
 		}
 
+		clueUnlocked = false;
+
 		//New phrase.
 		ChoosePhrase();
 		SortPhrase();
@@ -719,5 +762,15 @@ public class GameManager : MonoBehaviour
 		scoreAdditionUI.GetComponent<UIBehavior> ().Hide();
 		difficultyAdditionUI.GetComponent<UIBehavior> ().Hide();
 		timerAdditionUI.GetComponent<UIBehavior> ().Hide();
+	}
+
+	public void UnlockClue()
+	{
+		if (!clueUnlocked)
+		{
+			clueUnlocked = true;
+			roundTimer -= clueUnlockTime;
+			clueUI.GetComponent<UIBehavior> ().Hide ();
+		}
 	}
 }
