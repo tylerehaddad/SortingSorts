@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
 	public GameObject flippedTutorialUI;
 
 	public Text finalScore;
+	public Text finalPhrase;
 
 	[Header("Drawers:")]
 	public DrawerBehavior sponsorDrawer;
@@ -161,6 +162,26 @@ public class GameManager : MonoBehaviour
 	{
 		if (playing)
 		{
+			//Game Over! You suck!
+			if (roundTimer < 0)
+			{
+				roundTimer = 0;
+				playing = false;
+				overDrawer.Open();
+				drawer.GetComponent<GameDrawerBehavior> ().Close ();
+				stick.GetComponent<GameDrawerBehavior> ().Open ();
+
+				scoreUI.GetComponent<UIBehavior> ().Hide();
+				difficultyUI.GetComponent<UIBehavior> ().Hide();
+				timerUI.GetComponent<UIBehavior> ().Hide();
+				clueUI.GetComponent<UIBehavior> ().Hide();
+
+				hintText.text = "";
+				finalScore.text = score.ToString ();
+				source.clip = endClip;
+				source.Play();
+			}
+
 			if (!paused)
 			{
 				//Display the Timer.
@@ -191,25 +212,6 @@ public class GameManager : MonoBehaviour
 			}
 
 			printTutorialDrawn = true;
-
-			//Game Over! You suck!
-			if (roundTimer < 0)
-			{
-				playing = false;
-				overDrawer.Open();
-				drawer.GetComponent<GameDrawerBehavior> ().Close ();
-				stick.GetComponent<GameDrawerBehavior> ().Open ();
-
-				scoreUI.GetComponent<UIBehavior> ().Hide();
-				difficultyUI.GetComponent<UIBehavior> ().Hide();
-				timerUI.GetComponent<UIBehavior> ().Hide();
-				clueUI.GetComponent<UIBehavior> ().Hide();
-
-				hintText.text = "";
-				finalScore.text = score.ToString ();
-				source.clip = endClip;
-				source.Play();
-			}
 		} else
 		{
 			printTutorialDrawn = false;
@@ -385,6 +387,7 @@ public class GameManager : MonoBehaviour
 		hintText.text = hintTextLabel + hints[i];
 
 		clueText.text = clues [i];
+		finalPhrase.text = currentPhrase;
 
 		//Debug this!
 		Debug.Log(currentPhrase);
