@@ -91,6 +91,11 @@ public class ClickAndDrag : MonoBehaviour
 
 							selectedBlock.GetComponent<SpriteRenderer> ().sortingOrder = 17;
 							selectedBlock.GetComponentsInChildren<SpriteRenderer> () [1].sortingOrder = 16;
+						} else
+						{
+							selectedBlock.transform.position = new Vector2 (selectedBlock.GetComponent<Letter> ().startPos.x, selectedBlock.GetComponent<Letter> ().startPos.y + drawer.position.y);
+							selectedBlock.GetComponent<SpriteRenderer> ().sortingOrder = 1;
+							selectedBlock.GetComponentsInChildren<SpriteRenderer> () [1].sortingOrder = -1;
 						}
 					} else
 					{

@@ -682,6 +682,8 @@ public class GameManager : MonoBehaviour
 				blocks [i].transform.SetParent (drawer);
 
 				blocks[i].transform.position = new Vector2 (blocks[i].GetComponent<Letter>().startPos.x, blocks[i].GetComponent<Letter>().startPos.y + drawer.position.y);
+				blocks[i].GetComponent<SpriteRenderer> ().sortingOrder = 1;
+				blocks[i].GetComponentsInChildren<SpriteRenderer> () [1].sortingOrder = -1;
 			}
 			for (int i = 0; i < underscores.Count; i++) 
 			{
