@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
 	public GameObject clueUnlockedUI;
 	public GameObject clueLockedUI;
 
+	public GameObject flippedTutorialUI;
+
 	public Text finalScore;
 
 	[Header("Drawers:")]
@@ -227,9 +229,11 @@ public class GameManager : MonoBehaviour
 			if (placeTutorial == true)
 			{
 				placeAlpha = Mathf.Lerp (placeAlpha, 1, tutorialArrowLerpSpeed);
+				flippedTutorialUI.GetComponent<UIBehavior> ().Show ();
 			} else
 			{
 				placeAlpha = Mathf.Lerp (placeAlpha, 0, tutorialArrowLerpSpeed);
+				flippedTutorialUI.GetComponent<UIBehavior> ().Hide ();
 			}
 
 
@@ -260,6 +264,9 @@ public class GameManager : MonoBehaviour
 					placeTutorial = true;
 				}
 			}
+		} else
+		{
+			flippedTutorialUI.GetComponent<UIBehavior> ().Hide();
 		}
 
 		//Set the alphas.
