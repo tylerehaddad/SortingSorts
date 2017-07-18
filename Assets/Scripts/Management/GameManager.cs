@@ -428,8 +428,8 @@ public class GameManager : MonoBehaviour
 		while(position < lineMax * lineAmount)
 		{
 			//Set the x & y of the new tile.
-			x = stick.position.x + stickOffsetX - blockWidth * (position - (Mathf.Floor(position/lineAmount) * lineAmount));
-			y = stick.position.y + stickOffsetY - blockHeight * (Mathf.Floor(position/lineAmount));
+			x = stick.position.x + stickOffsetX + blockWidth * (position - (Mathf.Floor(position/lineAmount) * lineAmount));
+			y = stick.position.y + stickOffsetY + blockHeight * (Mathf.Floor(position/lineAmount));
 
 			//Lets spawn something in the phrase if we can.
 			if (positionPhrase < currentPhrase.Length)
